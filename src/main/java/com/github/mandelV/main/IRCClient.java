@@ -31,7 +31,7 @@ public class IRCClient implements Runnable  {
         }
     }
 
-    //test commit
+
     private void connect(){
         this.send("NICK Shinzou");
         this.send("USER Shinzou test localhost :realname");
