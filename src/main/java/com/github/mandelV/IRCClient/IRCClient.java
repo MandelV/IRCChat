@@ -1,10 +1,12 @@
 package com.github.mandelV.IRCClient;
 
-import com.github.mandelV.IRCClient.Parser.Parser;
-import com.github.mandelV.IRCClient.Parser.ParserException;
+import com.github.mandelV.IRCClient.Parser.IRCMessage;
+import com.github.mandelV.IRCClient.Parser.IRCParser;
+
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 
 public class IRCClient implements Runnable  {
@@ -40,9 +42,6 @@ public class IRCClient implements Runnable  {
 
     }
 
-    private void pong(){
-
-    }
 
 
 
@@ -74,41 +73,8 @@ public class IRCClient implements Runnable  {
 
 
     private Commands processingMessage(final String str){
-        System.out.println(str);
-        Parser parser = new Parser();
-        Commands commands = null;
-        CommandTypes commandTypes = null;
-        String param = "";
 
-        if(str.startsWith(":")){
-
-
-
-        }else{
-
-            for(CommandTypes c : CommandTypes.values()){
-                if(str.startsWith(c.toString())){
-                    commandTypes = c;
-                    parser.setRegex(":(.*?)$");
-                    try {
-                        param = parser.find(str);
-                    } catch (ParserException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-            commands = new Commands("", "", "", commandTypes, param);
-
-        }
-
-
-
-
-
-
-        return commands;
-
+        return  null;
     }
 
 
@@ -116,31 +82,20 @@ public class IRCClient implements Runnable  {
 
     public void run() {
 
-
        boolean stop = false;
 
+       //this.connect();
 
-       this.connect();
+        String raw = "PING :DDSQDQSDQS";
+        IRCMessage parsed = IRCParser.parse(raw);
+
+
+        System.out.println(parsed.getCommand()); //QUIT
+        System.out.println(parsed.getTrailing()); //Gone to have lunch
+
 
        while(true){
-           if(!this.receiveIsReady()) continue;
-
-           Commands commands = this.processingMessage(this.receive());
-
-           if(commands == null) continue;
-           if(commands.getCommandTypes() == CommandTypes.PING){
-               this.send("PONG :" + commands.getParam());
-
-           }
-
 
        }
-
-
-
-
-
-
-
     }
 }
