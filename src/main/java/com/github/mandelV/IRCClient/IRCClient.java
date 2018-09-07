@@ -1,9 +1,11 @@
-package com.github.mandelV.main;
+package com.github.mandelV.IRCClient;
+
+import com.github.mandelV.IRCClient.Parser.Parser;
+import com.github.mandelV.IRCClient.Parser.ParserException;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class IRCClient implements Runnable  {
     private String address;
@@ -12,8 +14,6 @@ public class IRCClient implements Runnable  {
     private PrintWriter writer;
     private BufferedReader reader;
     private String message;
-    private Pattern regex;
-    private Matcher matcher;
 
 
     public IRCClient(final String address, final int port){
@@ -43,7 +43,10 @@ public class IRCClient implements Runnable  {
     private void pong(){
 
     }
-//
+
+
+
+
     synchronized public void send(String msg){
             this.writer.write(msg + "\r\n");
             this.writer.flush();
@@ -68,17 +71,76 @@ public class IRCClient implements Runnable  {
         }
     }
 
+
+
+    private Commands processingMessage(final String str){
+        System.out.println(str);
+        Parser parser = new Parser();
+        Commands commands = null;
+        CommandTypes commandTypes = null;
+        String param = "";
+
+        if(str.startsWith(":")){
+
+
+
+        }else{
+
+            for(CommandTypes c : CommandTypes.values()){
+                if(str.startsWith(c.toString())){
+                    commandTypes = c;
+                    parser.setRegex(":(.*?)$");
+                    try {
+                        param = parser.find(str);
+                    } catch (ParserException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            commands = new Commands("", "", "", commandTypes, param);
+
+        }
+
+
+
+
+
+
+        return commands;
+
+    }
+
+
+
+
     public void run() {
 
-        this.connect();
 
-        while (true) {
-            if (receiveIsReady()) {//Le message est entièrement reçu
-                this.message = this.receive();//reception
-                System.out.println(this.message);
+       boolean stop = false;
 
 
-            }
-        }
+       this.connect();
+
+       while(true){
+           if(!this.receiveIsReady()) continue;
+
+           Commands commands = this.processingMessage(this.receive());
+
+           if(commands == null) continue;
+           if(commands.getCommandTypes() == CommandTypes.PING){
+               this.send("PONG :" + commands.getParam());
+
+           }
+
+
+       }
+
+
+
+
+
+
+
     }
 }

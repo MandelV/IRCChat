@@ -16,7 +16,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.mandelV.main.main</mainClass>
+                            <mainClass>com.github.mandelV.IRCClient.main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
