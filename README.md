@@ -1,0 +1,2 @@
+# IRCChat
+Simple IRC chat.
