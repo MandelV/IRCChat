@@ -3,13 +3,12 @@ package com.github.mandelV.IRCClient;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
 import com.github.mandelV.IRCClient.Parser.PrefixPosition;
-
-
 import java.io.*;
 import java.net.Socket;
-import java.util.List;
 
-
+/**
+ * @author Mandel VAUBOURG
+ */
 public class IRCClient implements Runnable  {
     private String address;
     private int port;
@@ -21,8 +20,14 @@ public class IRCClient implements Runnable  {
     private PrintWriter writer;
     private BufferedReader reader;
     private String message;
+    boolean stop = false;
 
 
+    /**
+     *
+     * @param address
+     * @param port
+     */
     public IRCClient(final String address, final int port){
 
         try {
@@ -38,27 +43,53 @@ public class IRCClient implements Runnable  {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    synchronized public boolean isStop() {
+        return stop;
+    }
 
+    /**
+     *
+     */
     private void connect(){
         this.send("NICK " + nickname);
         this.send("USER " + nickname + " " + name + " " + domain + " :realname");
     }
 
-    private void disconnect(){
-
-    }
-
-
+    /**
+     *
+     * @param channel
+     */
     public void setChannel(String channel) {
         this.channel = channel;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getChannel() {
         return channel;
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    /**
+     *
+     * @param msg
+     */
     synchronized public void send(String msg){
 
+        if(msg == null) return;
         this.processingMessage(IRCParser.parse(msg));
         this.writer.write(msg + "\r\n");
         this.writer.flush();
@@ -66,6 +97,10 @@ public class IRCClient implements Runnable  {
 
     }
 
+    /**
+     *
+     * @return
+     */
     private String receive(){
         String line = " ";
         try {
@@ -76,6 +111,10 @@ public class IRCClient implements Runnable  {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     private boolean receiveIsReady() {
         try {
             return reader.ready();
@@ -85,19 +124,22 @@ public class IRCClient implements Runnable  {
         }
     }
 
-
-
+    /**
+     *
+     * @param message
+     */
     synchronized private void processingMessage(IRCMessage message){
-
-
+        if(message == null) return;
         CommandTypes commandTypes = null;
 
+        //determines what kind of cmd in message
         for(CommandTypes cmd : CommandTypes.values()){
             if(message.getCommand().toUpperCase().equals(cmd.toString())){
                 commandTypes = cmd;
                 break;
             }
         }
+
         if(commandTypes == null) return;
 
         switch (commandTypes){
@@ -107,6 +149,9 @@ public class IRCClient implements Runnable  {
 
                 break;
             case PRIVMSG:
+                if(!message.getPrefix(PrefixPosition.FIRST).equals(this.nickname) && !message.getPrefix().isEmpty()){
+                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " : " + message.getTrailing());
+                }
                 break;
             case JOIN:
                 if( message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
@@ -123,6 +168,9 @@ public class IRCClient implements Runnable  {
             case NICK:
                 break;
             case QUIT:
+                System.out.println("You have leaved the server");
+                this.stop = true;
+
                 break;
             case USER:
                 break;
@@ -130,27 +178,28 @@ public class IRCClient implements Runnable  {
                 break;
         }
 
-
-
     }
 
 
-
-
+    /**
+     *
+     */
     public void run() {
 
-       boolean stop = false;
-
        this.connect();
-       while(!stop){
+       while(!this.stop){
            if(!this.receiveIsReady()) continue;
            IRCMessage message = IRCParser.parse(this.receive());
            this.processingMessage(message);
-
-           //System.out.println(message.getRaw());
-
-
-
        }
+
+       try{
+           this.reader.close();
+           this.writer.close();
+           this.socket.close();
+       }catch (Exception e){
+           System.out.println(e);
+       }
+
     }
 }

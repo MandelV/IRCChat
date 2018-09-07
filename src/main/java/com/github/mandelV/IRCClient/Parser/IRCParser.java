@@ -19,15 +19,13 @@ public final class IRCParser {
      * @return
      */
     public static final IRCMessage parse(String input) {
+        //Invalid message
+        if(input == null || input.equals("")) return null;
         HashMap<String, String> message_tags = new HashMap<String, String>();
         String prefix = "";
         String command = "";
         ArrayList<String> middle = new ArrayList<String>();
         String trailing = "";
-
-        //Invalid message
-        if(input == null || input.equals(""))
-            return null;
 
         //point to the next part that needs to be processed
         int cursor = 0;
@@ -52,15 +50,15 @@ public final class IRCParser {
                 if(kv.length == 2) {
                     String val = kv[1];
                     //Escape value
-                    while(val.indexOf("\\r") >= 0)
+                    while(val.contains("\\r"))
                         val = val.replace("\\r", "\r");
-                    while(val.indexOf("\\n") >= 0)
+                    while(val.contains("\\n") )
                         val = val.replace("\\n", "\n");
-                    while(val.indexOf("\\\\") >= 0)
+                    while(val.contains("\\\\"))
                         val = val.replace("\\\\", "\\");
-                    while(val.indexOf("\\s") >= 0)
+                    while(val.contains("\\s"))
                         val = val.replace("\\s", " ");
-                    while(val.indexOf("\\:") >= 0)
+                    while(val.contains("\\:"))
                         val = val.replace("\\:", ";");
                     message_tags.put(kv[0], val);
 
@@ -72,8 +70,9 @@ public final class IRCParser {
         }
 
         //Ignore any whitespace
-        while(input.charAt(cursor) == ' ')
-            cursor++;
+        while(input.charAt(cursor) == ' ') cursor++;
+
+
 
         //Determine whether message contains a prefix component
         //Prefix components starts with :
@@ -98,15 +97,16 @@ public final class IRCParser {
         if(cursor < input.length()) {
             int command_beginning = cursor;
             cursor = input.indexOf(" ", cursor);
-            command = input.substring(command_beginning, cursor);
+            if(cursor > -1) command = input.substring(command_beginning, cursor);
         }
+        if(cursor < 0) cursor = 0;
 
         //Ignore any whitespace
         while(input.charAt(cursor) == ' ')
             cursor++;
 
         //Extract message parameters component
-        breakWhile:
+
         while(cursor < input.length()) {
             int next = input.indexOf(" ", cursor);
 
@@ -114,7 +114,7 @@ public final class IRCParser {
             //End of message
             if(input.charAt(cursor) == ':') {
                 trailing = input.substring(++cursor, input.length());
-                break breakWhile;
+                break;
             }
 
             //Message contain trailing
@@ -131,7 +131,7 @@ public final class IRCParser {
             //End of message
             if(next == -1) {
                 middle.addAll(Arrays.asList(input.substring(cursor, input.length()).split(" ")));
-                break breakWhile;
+                break;
             }
         }
 
