@@ -49,7 +49,7 @@ public class IRCClient implements Runnable  {
             this.writer.flush();
     }
 
-    synchronized public String receive(){
+    private String receive(){
         String line = "";
         try {
             if(reader.ready()) line = reader.readLine();
@@ -59,7 +59,7 @@ public class IRCClient implements Runnable  {
         }
     }
 
-    public boolean receiveIsReady() {
+    private boolean receiveIsReady() {
         try {
             return reader.ready();
         } catch (IOException e) {
