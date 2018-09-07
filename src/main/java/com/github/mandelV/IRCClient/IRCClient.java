@@ -13,6 +13,10 @@ import java.util.List;
 public class IRCClient implements Runnable  {
     private String address;
     private int port;
+    private String channel = "";
+    private String nickname = "Shinzou";
+    private String name = "mand";
+    private String  domain = "localhost";
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
@@ -23,6 +27,7 @@ public class IRCClient implements Runnable  {
 
         try {
             message = "";
+
             this.socket = new Socket(address, port);
             System.out.println("initial connection success !");
             this.writer = new PrintWriter(socket.getOutputStream());
@@ -35,8 +40,8 @@ public class IRCClient implements Runnable  {
 
 
     private void connect(){
-        this.send("NICK Shinzou");
-        this.send("USER Shinzou test localhost :realname");
+        this.send("NICK " + nickname);
+        this.send("USER " + nickname + " " + name + " " + domain + " :realname");
     }
 
     private void disconnect(){
@@ -44,16 +49,25 @@ public class IRCClient implements Runnable  {
     }
 
 
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
 
-
+    public String getChannel() {
+        return channel;
+    }
 
     synchronized public void send(String msg){
-            this.writer.write(msg + "\r\n");
-            this.writer.flush();
+
+        this.processingMessage(IRCParser.parse(msg));
+        this.writer.write(msg + "\r\n");
+        this.writer.flush();
+
+
     }
 
     private String receive(){
-        String line = "";
+        String line = " ";
         try {
             if(reader.ready()) line = reader.readLine();
             return line;
@@ -73,9 +87,51 @@ public class IRCClient implements Runnable  {
 
 
 
-    private Commands processingMessage(final String str){
+    synchronized private void processingMessage(IRCMessage message){
 
-        return  null;
+
+        CommandTypes commandTypes = null;
+
+        for(CommandTypes cmd : CommandTypes.values()){
+            if(message.getCommand().toUpperCase().equals(cmd.toString())){
+                commandTypes = cmd;
+                break;
+            }
+        }
+        if(commandTypes == null) return;
+
+        switch (commandTypes){
+
+            case PING:
+                this.send("PONG :" + message.getTrailing());
+
+                break;
+            case PRIVMSG:
+                break;
+            case JOIN:
+                if( message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
+                    this.channel = message.getParameters()[0];
+                    System.out.println("You have joined the channel : " + this.channel);
+
+                }else if(!message.getPrefix().isEmpty()) {
+                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getParameters()[0]);
+                }
+
+                break;
+            case LIST:
+                break;
+            case NICK:
+                break;
+            case QUIT:
+                break;
+            case USER:
+                break;
+            case NAMES:
+                break;
+        }
+
+
+
     }
 
 
@@ -85,19 +141,15 @@ public class IRCClient implements Runnable  {
 
        boolean stop = false;
 
-       //this.connect();
+       this.connect();
+       while(!stop){
+           if(!this.receiveIsReady()) continue;
+           IRCMessage message = IRCParser.parse(this.receive());
+           this.processingMessage(message);
 
-        String raw = ":syrk!kalt@millennium.stealth.net PRVMSG #help :dddd";
-        IRCMessage parsed = IRCParser.parse(raw);
-
-
-        System.out.println(parsed.getPrefix()); //QUIT
-
-
-        System.out.println(parsed.getPrefix(PrefixPosition.FIRST)  + " " + parsed.getPrefix(PrefixPosition.SECOND) + " " + parsed.getPrefix(PrefixPosition.THIRD));
+           //System.out.println(message.getRaw());
 
 
-       while(true){
 
        }
     }

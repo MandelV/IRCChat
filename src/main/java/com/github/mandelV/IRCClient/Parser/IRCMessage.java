@@ -144,6 +144,11 @@ public class IRCMessage {
         return this.prefix;
     }
 
+    /**
+     * @author Mandel Vaubourg
+     * @param position
+     * @return the part of prefix
+     */
     public String getPrefix(final PrefixPosition position){
 
         Pattern pattern = null;

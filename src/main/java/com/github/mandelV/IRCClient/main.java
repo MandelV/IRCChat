@@ -22,7 +22,14 @@ public class main {
         while(true){
 
             message = scanner.nextLine();
-            server.send("PRIVMSG #help :" + message);
+            if(message.startsWith("/")){
+                message = message.substring(1);
+                server.send(message);
+
+            }else{
+                server.send("PRIVMSG " + server.getChannel() + " :" + message);
+            }
+
 
 
         }
