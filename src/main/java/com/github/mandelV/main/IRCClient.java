@@ -44,7 +44,7 @@ public class IRCClient implements Runnable  {
     private void pong(){
 
     }
-
+//
     synchronized public void send(String msg){
             this.writer.write(msg + "\r\n");
             this.writer.flush();
