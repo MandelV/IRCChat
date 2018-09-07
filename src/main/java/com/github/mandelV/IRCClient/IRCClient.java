@@ -2,6 +2,7 @@ package com.github.mandelV.IRCClient;
 
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
+import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 
 
 import java.io.*;
@@ -86,12 +87,14 @@ public class IRCClient implements Runnable  {
 
        //this.connect();
 
-        String raw = "PING :DDSQDQSDQS";
+        String raw = ":syrk!kalt@millennium.stealth.net PRVMSG #help :dddd";
         IRCMessage parsed = IRCParser.parse(raw);
 
 
-        System.out.println(parsed.getCommand()); //QUIT
-        System.out.println(parsed.getTrailing()); //Gone to have lunch
+        System.out.println(parsed.getPrefix()); //QUIT
+
+
+        System.out.println(parsed.getPrefix(PrefixPosition.FIRST)  + " " + parsed.getPrefix(PrefixPosition.SECOND) + " " + parsed.getPrefix(PrefixPosition.THIRD));
 
 
        while(true){

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -141,6 +143,29 @@ public class IRCMessage {
     public String getPrefix() {
         return this.prefix;
     }
+
+    public String getPrefix(final PrefixPosition position){
+
+        Pattern pattern = null;
+        Matcher matcher;
+
+        switch (position){
+            case FIRST:
+                pattern = Pattern.compile("^(.*?)!");
+                break;
+            case SECOND:
+                pattern = Pattern.compile("!(.*?)@");
+                break;
+            case THIRD:
+                pattern = Pattern.compile("@(.*?)$");
+                break;
+        }
+
+        matcher = pattern.matcher(this.prefix);
+        return (matcher.find()) ? matcher.group(1) : "";
+    }
+
+
 
     /**
      * Get message command
