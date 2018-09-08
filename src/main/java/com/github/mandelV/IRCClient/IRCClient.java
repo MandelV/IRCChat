@@ -189,7 +189,7 @@ public class IRCClient implements Runnable  {
 
         //@test-tag=value;secondtag=2 :Mandel!Vaubourg@localhost PRIVMSG #toto :test
 
-        IRCParser.parse("USEr");
+        IRCParser.parse("USER test test :yolo");
 
 
       /* this.connect();

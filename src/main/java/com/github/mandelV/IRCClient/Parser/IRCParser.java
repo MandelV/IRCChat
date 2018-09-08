@@ -26,7 +26,7 @@ public final class IRCParser {
 
         String prefix = "";
         List<String> parsedPrefix = new ArrayList<>();
-        CommandTypes command;
+        CommandTypes command = null;
         List<String> arguments = new ArrayList<>();
         String traling = "";
         HashMap<String, String> messageTags = new HashMap<>();//IRCv3
@@ -76,8 +76,6 @@ public final class IRCParser {
             if(cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
-        System.out.println(" ");
-
 
 
 
@@ -92,6 +90,21 @@ public final class IRCParser {
         }
 
 
+
+        if(cursor == input.length()-1 && command == null) return null;
+        while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
+
+
+        //PARAMETERS AND TRALING
+
+        startCursor = cursor;
+        if(cursor == -1) cursor = input.length();
+        String str = input.substring(cursor, input.length()-1);
+        List<String> paramAndTralling = new ArrayList<>();
+
+        StringTokenizer token = new StringTokenizer(str," :");
+
+        while(token.hasMoreTokens()) paramAndTralling.add(token.nextToken());
 
 
         return null;
