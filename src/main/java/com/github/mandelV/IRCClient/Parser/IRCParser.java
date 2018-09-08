@@ -1,8 +1,7 @@
 package com.github.mandelV.IRCClient.Parser;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import com.github.mandelV.IRCClient.CommandTypes;
+
+import java.util.*;
 
 /**
  * IRC Parser
@@ -18,7 +17,88 @@ public final class IRCParser {
      * @param input
      * @return
      */
-    public static final IRCMessage parse(String input) {
+
+
+    public static final IRCMessage parse(final String input){
+        if(input == null || input.equals("") || input.length() > 512) return null;
+
+        int cursor = 0;
+
+        String prefix = "";
+        List<String> parsedPrefix = new ArrayList<>();
+        CommandTypes command;
+        List<String> arguments = new ArrayList<>();
+        String traling = "";
+        HashMap<String, String> messageTags = new HashMap<>();//IRCv3
+
+        //MESSAGE TAG
+        if(input.charAt(0) == '@'){
+
+            cursor = input.indexOf(" ");
+            String tags = input.substring(1, cursor);
+            StringTokenizer token = new StringTokenizer(tags,";");
+            while (token.hasMoreTokens()){
+                String[] splitValue = token.nextToken().split("=");
+                if(splitValue.length == 2) messageTags.put(splitValue[0], splitValue[1]);
+            }
+            if(cursor == input.length()-1) return null;
+            while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
+        }
+
+        //messageTags.forEach((k, v) -> System.out.println(k + " : " + v));
+
+
+
+        //PREFIX
+        if(input.charAt(cursor) == ':'){
+
+            int startCursor = cursor;
+
+            cursor = input.indexOf(" ", cursor);
+            String prefix_ = input.substring(startCursor, cursor);
+            prefix = input.substring(startCursor+1, cursor);
+
+            int testChar = 0;
+            for(int i = 0; i < prefix_.length() && testChar <= 3; i++){
+                if(prefix_.charAt(i) == ':' || prefix_.charAt(i) == '!' || prefix_.charAt(i) == '@') testChar++;
+            }
+            if(testChar < 3 || testChar > 3) return null;
+
+
+            StringTokenizer token = new StringTokenizer(prefix_, ":!@");
+
+            while (token.hasMoreTokens()){
+                parsedPrefix.add(token.nextToken());
+            }
+            System.out.println(prefix);
+            parsedPrefix.forEach((v -> System.out.print(v + " ")));
+
+            if(cursor == input.length()-1) return null;
+            while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
+        }
+        System.out.println(" ");
+
+
+
+
+        //COMMAND
+        int startCursor = cursor;
+        cursor = input.indexOf(" ", cursor);
+        if(cursor == -1) cursor = input.length();
+        String cmdStr = input.substring(startCursor, cursor);
+
+        for(CommandTypes cmd : CommandTypes.values()){
+            if(cmd.toString().toUpperCase().equals(cmdStr.toUpperCase())) command = cmd;
+        }
+
+
+
+
+        return null;
+    }
+
+    @Deprecated
+    public static final IRCMessage parser(String input) {
         //Invalid message
         if(input == null || input.equals("")) return null;
         HashMap<String, String> message_tags = new HashMap<String, String>();

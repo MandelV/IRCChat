@@ -186,7 +186,13 @@ public class IRCClient implements Runnable  {
      */
     public void run() {
 
-       this.connect();
+
+        //@test-tag=value;secondtag=2 :Mandel!Vaubourg@localhost PRIVMSG #toto :test
+
+        IRCParser.parse("USEr");
+
+
+      /* this.connect();
        while(!this.stop){
            if(!this.receiveIsReady()) continue;
            IRCMessage message = IRCParser.parse(this.receive());
@@ -199,7 +205,7 @@ public class IRCClient implements Runnable  {
            this.socket.close();
        }catch (Exception e){
            System.out.println(e);
-       }
+       }*/
 
     }
 }
