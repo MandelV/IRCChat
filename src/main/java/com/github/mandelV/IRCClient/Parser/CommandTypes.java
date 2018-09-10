@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient;
+package com.github.mandelV.IRCClient.Parser;
 
 public enum CommandTypes {
     USER,

@@ -1,5 +1,8 @@
 package com.github.mandelV.IRCClient;
 
+import com.github.mandelV.IRCClient.Chat.ChatDisplay;
+import com.github.mandelV.IRCClient.Client.IRCClient;
+
 import java.util.Scanner;
 
 public class main {
@@ -11,9 +14,11 @@ public class main {
         String message = "0";
 
         //Client initialization
-        IRCClient client = new IRCClient(serverAddress, 6667);
+        IRCClient client =  IRCClient.getInstance(serverAddress, 6667);
         Thread thread = new Thread(client);
         thread.start();
+
+        ChatDisplay chatDisplay =  ChatDisplay.getInstance(5);
 
 
         while(!client.isStop()){

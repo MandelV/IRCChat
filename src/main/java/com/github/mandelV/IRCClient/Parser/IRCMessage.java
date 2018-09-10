@@ -1,7 +1,5 @@
 package com.github.mandelV.IRCClient.Parser;
 
-import com.github.mandelV.IRCClient.CommandTypes;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
