@@ -191,11 +191,11 @@ public class IRCClient implements Runnable  {
 
         //@test-tag=value;secondtag=2 :Mandel!Vaubourg@localhost PRIVMSG #toto :test
 
-        IRCMessage message = IRCParser.parse("NOTICE * :*** Looking up your hostname...");
+        //IRCMessage message = IRCParser.parse("NOTICE * :*** Looking up your hostname...");
 
         //System.out.println(message.getOriginalRaw());
 
-      /*this.connect();
+      this.connect();
        while(!this.stop){
            if(!this.receiveIsReady()) continue;
            IRCMessage message = IRCParser.parse(this.receive());
@@ -212,7 +212,7 @@ public class IRCClient implements Runnable  {
            this.socket.close();
        }catch (Exception e){
            System.out.println(e);
-       }*/
+       }
 
     }
 }

@@ -6,8 +6,8 @@ import java.util.*;
 /**
  * IRC Parser
  *
- * @author xdevnull
- * Jan 18, 2017
+ * @author Vaubourg Mandel
+
  */
 public final class IRCParser {
 
@@ -21,9 +21,9 @@ public final class IRCParser {
 
     public static final IRCMessage parse(String input){
 
-        System.out.println(input);
+        //System.out.println(input);
         if(input == null || input.equals("")) return null;
-        System.out.print("test1 ");
+        //System.out.print("test1 ");
 
         int cursor = 0;
 
@@ -36,7 +36,7 @@ public final class IRCParser {
 
         if(input.charAt(0) == '/') input = input.substring(1);
 
-        System.out.print("test2 ");
+        //System.out.print("test2 ");
 
 
 
@@ -54,7 +54,7 @@ public final class IRCParser {
             if(cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
-        System.out.print("test3 ");
+        //System.out.print("test3 ");
 
         //messageTags.forEach((k, v) -> System.out.println(k + " : " + v));
 
@@ -86,7 +86,7 @@ public final class IRCParser {
             if(cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
-        System.out.print("test4 ");
+        //System.out.print("test4 ");
 
 
 
@@ -109,12 +109,12 @@ public final class IRCParser {
 
         if(command == null) return null;
 
-        System.out.print("test5 ");
+        //System.out.print("test5 ");
 
         if(cursor == input.length()-1 && command == null) return null;
         while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
 
-        System.out.print("test6 ");
+        //System.out.print("test6 ");
         //PARAMETERS AND TRALING
 
         startCursor = cursor;
@@ -128,7 +128,7 @@ public final class IRCParser {
         while(token.hasMoreTokens()){
             paramAndTralling.add(token.nextToken());
         }
-        System.out.print("test7 ");
+        //System.out.print("test7 ");
 
 
 
@@ -140,7 +140,7 @@ public final class IRCParser {
 
 
         paramAndTralling.forEach(v -> arguments.add(v));
-        System.out.print("test9 ");
+        //System.out.print("test9 ");
         return new IRCMessage(input, prefix, parsedPrefix, command, arguments, messageTags, traling);
     }
 
