@@ -134,11 +134,13 @@ public class IRCClient implements Runnable  {
 
         //determines what kind of cmd in message
         for(CommandTypes cmd : CommandTypes.values()){
-            if(message.getCommand().toUpperCase().equals(cmd.toString())){
+            if(message.getCommand().toString().equals(cmd.toString())){
                 commandTypes = cmd;
                 break;
             }
         }
+
+
 
         if(commandTypes == null) return;
 
@@ -155,11 +157,11 @@ public class IRCClient implements Runnable  {
                 break;
             case JOIN:
                 if( message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
-                    this.channel = message.getParameters()[0];
+                    this.channel = message.getArguments().get(0);
                     System.out.println("You have joined the channel : " + this.channel);
 
                 }else if(!message.getPrefix().isEmpty()) {
-                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getParameters()[0]);
+                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getArguments().get(0));
                 }
 
                 break;
@@ -189,14 +191,19 @@ public class IRCClient implements Runnable  {
 
         //@test-tag=value;secondtag=2 :Mandel!Vaubourg@localhost PRIVMSG #toto :test
 
-        IRCParser.parse("USER test test :yolo");
+        IRCMessage message = IRCParser.parse("NOTICE * :*** Looking up your hostname...");
 
+        //System.out.println(message.getOriginalRaw());
 
-      /* this.connect();
+      /*this.connect();
        while(!this.stop){
            if(!this.receiveIsReady()) continue;
            IRCMessage message = IRCParser.parse(this.receive());
-           this.processingMessage(message);
+
+           System.out.println(" ");
+          // System.out.println(message.getOriginalRaw());
+
+           //this.processingMessage(message);
        }
 
        try{

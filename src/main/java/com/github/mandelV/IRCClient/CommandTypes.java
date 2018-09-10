@@ -6,8 +6,10 @@ public enum CommandTypes {
     PONG,
     PING,
     QUIT,
+    SQUIT,
     JOIN,
     NAMES,
     LIST,
     PRIVMSG,
+    NOTICE
 }

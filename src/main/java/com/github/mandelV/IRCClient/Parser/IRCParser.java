@@ -19,8 +19,11 @@ public final class IRCParser {
      */
 
 
-    public static final IRCMessage parse(final String input){
-        if(input == null || input.equals("") || input.length() > 512) return null;
+    public static final IRCMessage parse(String input){
+
+        System.out.println(input);
+        if(input == null || input.equals("")) return null;
+        System.out.print("test1 ");
 
         int cursor = 0;
 
@@ -30,6 +33,13 @@ public final class IRCParser {
         List<String> arguments = new ArrayList<>();
         String traling = "";
         HashMap<String, String> messageTags = new HashMap<>();//IRCv3
+
+        if(input.charAt(0) == '/') input = input.substring(1);
+
+        System.out.print("test2 ");
+
+
+
 
         //MESSAGE TAG
         if(input.charAt(0) == '@'){
@@ -44,6 +54,7 @@ public final class IRCParser {
             if(cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
+        System.out.print("test3 ");
 
         //messageTags.forEach((k, v) -> System.out.println(k + " : " + v));
 
@@ -70,48 +81,71 @@ public final class IRCParser {
             while (token.hasMoreTokens()){
                 parsedPrefix.add(token.nextToken());
             }
-            System.out.println(prefix);
-            parsedPrefix.forEach((v -> System.out.print(v + " ")));
+
 
             if(cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
+        System.out.print("test4 ");
 
 
 
         //COMMAND
+        String cmdStr = "";
         int startCursor = cursor;
-        cursor = input.indexOf(" ", cursor);
+        if(cursor == 0){
+            startCursor = 0;
+
+        }
+        cursor = input.indexOf(' ', cursor);
         if(cursor == -1) cursor = input.length();
-        String cmdStr = input.substring(startCursor, cursor);
+        cmdStr = input.substring(startCursor, cursor);
+
 
         for(CommandTypes cmd : CommandTypes.values()){
             if(cmd.toString().toUpperCase().equals(cmdStr.toUpperCase())) command = cmd;
         }
 
 
+        if(command == null) return null;
+
+        System.out.print("test5 ");
 
         if(cursor == input.length()-1 && command == null) return null;
         while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
 
-
+        System.out.print("test6 ");
         //PARAMETERS AND TRALING
 
         startCursor = cursor;
         if(cursor == -1) cursor = input.length();
-        String str = input.substring(cursor, input.length()-1);
+        String str = input.substring(cursor);
+
         List<String> paramAndTralling = new ArrayList<>();
 
-        StringTokenizer token = new StringTokenizer(str," :");
+        StringTokenizer token = new StringTokenizer(str," ");
 
-        while(token.hasMoreTokens()) paramAndTralling.add(token.nextToken());
+        while(token.hasMoreTokens()){
+            paramAndTralling.add(token.nextToken());
+        }
+        System.out.print("test7 ");
 
 
-        return null;
+
+
+        if(paramAndTralling.size() != 0 && paramAndTralling.get(paramAndTralling.size()-1).charAt(0) == ':'){
+            traling =  paramAndTralling.get(paramAndTralling.size()-1).substring(1);
+            paramAndTralling.remove(paramAndTralling.size()-1);
+        }
+
+
+        paramAndTralling.forEach(v -> arguments.add(v));
+        System.out.print("test9 ");
+        return new IRCMessage(input, prefix, parsedPrefix, command, arguments, messageTags, traling);
     }
 
-    @Deprecated
-    public static final IRCMessage parser(String input) {
+
+    /*public static final IRCMessage parser(String input) {
         //Invalid message
         if(input == null || input.equals("")) return null;
         HashMap<String, String> message_tags = new HashMap<String, String>();
@@ -228,7 +262,7 @@ public final class IRCParser {
             }
         }
 
-        return new IRCMessage(input, message_tags, prefix, command, middle.toArray(new String[middle.size()]), trailing);
-    }
+
+    }*/
 
 }
