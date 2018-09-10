@@ -142,27 +142,32 @@ public class IRCClient implements Runnable  {
 
 
 
+
         if(commandTypes == null) return;
 
         switch (commandTypes){
 
             case PING:
                 this.send("PONG :" + message.getTrailing());
-
                 break;
             case PRIVMSG:
                 if(!message.getPrefix(PrefixPosition.FIRST).equals(this.nickname) && !message.getPrefix().isEmpty()){
-                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " : " + message.getTrailing());
+                    String mp = (message.getArguments().size() > 0 && message.getArguments().get(0).equals(this.nickname)) ? " (whisper) " : " ";
+                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + mp + ": " + message.getTrailing());
                 }
                 break;
             case JOIN:
+
                 if( message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
-                    this.channel = message.getArguments().get(0);
+                    this.channel = message.getTrailing();
                     System.out.println("You have joined the channel : " + this.channel);
 
                 }else if(!message.getPrefix().isEmpty()) {
-                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getArguments().get(0));
+                    System.out.println(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getTrailing());
                 }
+
+                break;
+            case PART:
 
                 break;
             case LIST:
@@ -180,6 +185,7 @@ public class IRCClient implements Runnable  {
                 break;
         }
 
+
     }
 
 
@@ -188,22 +194,14 @@ public class IRCClient implements Runnable  {
      */
     public void run() {
 
-
-        //@test-tag=value;secondtag=2 :Mandel!Vaubourg@localhost PRIVMSG #toto :test
-
-        //IRCMessage message = IRCParser.parse("NOTICE * :*** Looking up your hostname...");
-
-        //System.out.println(message.getOriginalRaw());
-
       this.connect();
        while(!this.stop){
-           if(!this.receiveIsReady()) continue;
-           IRCMessage message = IRCParser.parse(this.receive());
+           if(this.receiveIsReady()){
 
-           System.out.println(" ");
-          // System.out.println(message.getOriginalRaw());
+               IRCMessage message = IRCParser.parse(this.receive());
+               this.processingMessage(message);
+           }
 
-           //this.processingMessage(message);
        }
 
        try{
