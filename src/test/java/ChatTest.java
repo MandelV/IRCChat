@@ -20,7 +20,7 @@ public class ChatTest {
         IRCMessage message = IRCParser.parse(":Test!Unit@Host.fr QUIT :Bye people !");
         Chat.getInstance().pushMessage(message);
 
-        if(Chat.getInstance().getMessages().size() != 1) fail("Error messageList");
+        if(Chat.getInstance().getMessages().size() != 1) fail("Error messageList size : " + Chat.getInstance().getMessages().size());
 
         Chat.displayMsg(Chat.getInstance().getMessages().get(0).getOriginalRaw());
 
