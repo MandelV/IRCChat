@@ -2,6 +2,7 @@ language: java
 env:
   - CODACY_PROJECT_TOKEN=186524ef5d1f4268b3cf16e4fc135c5a
 before_install:
+  - EXPORT CODACY_PROJECT_TOKEN=186524ef5d1f4268b3cf16e4fc135c5a
   - sudo apt-get install ngircd
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
