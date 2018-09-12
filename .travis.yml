@@ -9,6 +9,4 @@ before_install:
 script:
   - mvn com.gavinmogan:codacy-maven-plugin:coverage -DcoverageReportFile=target/site/jacoco/jacoco.xml -DprojectToken=186524ef5d1f4268b3cf16e4fc135c5a -DapiToken=wFLZi81A9TcWRFFXI55E
 after_success:
-- cd target
-- ls
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
