@@ -48,6 +48,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <exclude>com.github.mandelV.ircclient.client.ConnectionException</exclude>
+                    <exclude>com.github.mandelV.ircclient.client.InstanciateException</exclude>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
