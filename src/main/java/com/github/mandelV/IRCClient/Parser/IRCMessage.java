@@ -39,7 +39,7 @@ public class IRCMessage {
         return command;
     }
 
-    public HashMap<String, String> getMessageTags() {
+    public HashMap<String, String> getTags() {
         return messageTags;
     }
 

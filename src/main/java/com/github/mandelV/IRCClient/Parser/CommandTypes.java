@@ -1,5 +1,9 @@
 package com.github.mandelV.IRCClient.Parser;
 
+/**
+ * CommandTypes
+ * @author VAUBOURG Mandel
+ */
 public enum CommandTypes {
     USER,
     PART,

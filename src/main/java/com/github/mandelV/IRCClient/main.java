@@ -3,9 +3,13 @@ package com.github.mandelV.IRCClient;
 import com.github.mandelV.IRCClient.Bots.Bots;
 import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Client.IRCClient;
+import com.github.mandelV.IRCClient.Parser.IRCParser;
 
 import java.util.Scanner;
 
+/**
+ * @author VAUBOURG Mandel
+ */
 public class main {
 
     public static void main(String[] args) {
@@ -15,10 +19,8 @@ public class main {
         String domain = (args.length > 3) ? args[3] : "";
         String channel = (args.length > 4) ? args[4] : "";
 
-
-
         Scanner scanner = new Scanner(System.in);
-        String message = "0";
+        String message;
         Chat chatDisplay =  Chat.getInstance(5);
         chatDisplay.addObserver(new Bots());
 
@@ -26,10 +28,6 @@ public class main {
         IRCClient client =  IRCClient.getInstance(serverAddress, 6667, channel, nickname, name, domain);
         Thread thread = new Thread(client);
         thread.start();
-
-
-
-
 
         while(!client.isStop()){
             message = scanner.nextLine();

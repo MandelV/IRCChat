@@ -5,12 +5,15 @@ import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
 import com.github.mandelV.IRCClient.Parser.PrefixPosition;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
-import java.util.StringTokenizer;
 
 /**
+ * IRCClient
  * @author Mandel VAUBOURG
  */
 public class IRCClient implements Runnable  {

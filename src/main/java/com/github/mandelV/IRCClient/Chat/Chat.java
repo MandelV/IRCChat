@@ -8,11 +8,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.StringTokenizer;
 
 /**
  * Chat
- * @author Mandel VAUBOURG
+ * @author VAUBOURG Mandel
  */
 public class Chat extends Observable {
 

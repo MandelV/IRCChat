@@ -32,12 +32,13 @@ public final class IRCParser {
         while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
 
         //Remove the '/' (command character)
-        if(input.charAt(cursor) == '/') input = input.substring(1);
+        if(cursor != input.length() && input.charAt(cursor) == '/') input = input.substring(1);
 
         //MESSAGE TAG IRCv3.x
-        if(input.charAt(0) == '@'){
+        if(cursor != input.length() && input.length() > 1 && input.charAt(0) == '@'){
 
             cursor = input.indexOf(" ");
+            if(cursor == -1) return null;
 
             String tags = input.substring(1, cursor);//Only gets the TAG
 
@@ -54,12 +55,12 @@ public final class IRCParser {
 
 
         //PREFIX
-        if(input.charAt(cursor) == ':'){
+        if(cursor != input.length() && input.length() > 1 && input.charAt(cursor) == ':'){
 
             int startCursor = cursor;
 
             cursor = input.indexOf(" ", cursor);
-            String prefix_ = input.substring(startCursor, cursor);
+            String prefix_ = input.substring(startCursor, cursor-1);
             prefix = input.substring(startCursor+1, cursor);
 
             int testChar = 0;
@@ -76,7 +77,7 @@ public final class IRCParser {
             while (token.hasMoreTokens()) parsedPrefix.add(token.nextToken());
 
 
-            if(cursor == input.length()-1) return null;
+            if(cursor != input.length() && cursor == input.length()-1) return null;
             while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
         }
 
@@ -108,12 +109,14 @@ public final class IRCParser {
         String str = input.substring(cursor);
 
         cursor = str.indexOf(':');
+
         if(cursor == -1)cursor = str.length()-1;
         String param = "";
 
-        if(cursor+1 < str.length()) param = str.substring(0, cursor+1);
+        if(cursor+1 <= str.length()) param = str.substring(0, cursor+1);
 
         StringTokenizer args = new StringTokenizer(param, " ");
+
         while (args.hasMoreTokens()) arguments.add(args.nextToken());
 
         //TRAILING
