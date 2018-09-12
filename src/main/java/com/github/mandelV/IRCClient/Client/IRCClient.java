@@ -1,12 +1,14 @@
 package com.github.mandelV.IRCClient.Client;
 
-import com.github.mandelV.IRCClient.Chat.ChatDisplay;
+import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
 import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import java.io.*;
 import java.net.Socket;
+import java.util.Base64;
+import java.util.StringTokenizer;
 
 /**
  * @author Mandel VAUBOURG
@@ -15,16 +17,15 @@ public class IRCClient implements Runnable  {
     private String address;
     private int port;
     private String channel = "";
-    private String nickname = "Shinzou";
-    private String name = "mand";
-    private String  domain = "localhost";
+    private String nickname;
+    private String name;
+    private String  domain;
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
-    private String message;
-    boolean stop = false;
-
+    private boolean stop = false;
     private static IRCClient instance;
+    private boolean v = false;
 
 
     /**
@@ -32,13 +33,16 @@ public class IRCClient implements Runnable  {
      * @param address
      * @param port
      */
-    private IRCClient(final String address, final int port){
+    private IRCClient(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
+
+        this.channel = channel;
+        this.nickname = nickname;
+        this.name = name;
+        this.domain = domain;
 
         try {
-            message = "";
-
             this.socket = new Socket(address, port);
-            ChatDisplay.getInstance().pushMessage("initial connection success !");
+            Chat.displayMsg("initial connection success !");
             this.writer = new PrintWriter(socket.getOutputStream());
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
@@ -47,8 +51,8 @@ public class IRCClient implements Runnable  {
         }
     }
 
-    synchronized static public IRCClient getInstance(final String address, final int port){
-        instance = (instance == null) ? new IRCClient(address, port) : instance;
+    synchronized static public IRCClient getInstance(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
+        instance = (instance == null) ? new IRCClient(address, port, channel, nickname, name, domain) : instance;
         return instance;
     }
     synchronized static public IRCClient getInstance() throws InstanciateException{
@@ -154,10 +158,7 @@ public class IRCClient implements Runnable  {
                 break;
             }
         }
-
-
-
-
+        Chat.getInstance().pushMessage(message);
         if(commandTypes == null) return;
 
         switch (commandTypes){
@@ -166,19 +167,20 @@ public class IRCClient implements Runnable  {
                 this.send("PONG :" + message.getTrailing());
                 break;
             case PRIVMSG:
+
                 if(!message.getPrefix(PrefixPosition.FIRST).equals(this.nickname) && !message.getPrefix().isEmpty()){
                     String mp = (message.getArguments().size() > 0 && message.getArguments().get(0).equals(this.nickname)) ? " (whisper) " : " ";
-                    ChatDisplay.getInstance().pushMessage(message.getPrefix(PrefixPosition.FIRST) + mp + ": " + message.getTrailing());
+                    Chat.displayMsg(message.getPrefix(PrefixPosition.FIRST) + mp + ": " + message.getTrailing());
                 }
                 break;
             case JOIN:
 
-                if( message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
+                if(message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
                     this.channel = message.getTrailing();
-                    ChatDisplay.getInstance().pushMessage("You have joined the channel : " + this.channel);
+                    Chat.displayMsg("You have joined the channel : " + this.channel);
 
                 }else if(!message.getPrefix().isEmpty()) {
-                    ChatDisplay.getInstance().pushMessage(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getTrailing());
+                    Chat.displayMsg(message.getPrefix(PrefixPosition.FIRST) + " has joined the channel : " + message.getTrailing());
                 }
 
                 break;
@@ -190,7 +192,7 @@ public class IRCClient implements Runnable  {
             case NICK:
                 break;
             case QUIT:
-                ChatDisplay.getInstance().pushMessage("You have leaved the server");
+                Chat.displayMsg("You have leaved the server");
                 this.stop = true;
 
                 break;
@@ -199,11 +201,7 @@ public class IRCClient implements Runnable  {
             case NAMES:
                 break;
         }
-
-
     }
-
-
     /**
      *
      */
@@ -216,9 +214,7 @@ public class IRCClient implements Runnable  {
                IRCMessage message = IRCParser.parse(this.receive());
                this.processingMessage(message);
            }
-
        }
-
        try{
            this.reader.close();
            this.writer.close();
@@ -226,6 +222,7 @@ public class IRCClient implements Runnable  {
        }catch (Exception e){
            System.out.println(e);
        }
+
 
     }
 }

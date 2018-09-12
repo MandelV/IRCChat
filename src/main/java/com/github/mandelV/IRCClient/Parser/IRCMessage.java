@@ -1,23 +1,20 @@
 package com.github.mandelV.IRCClient.Parser;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * IRCMessage
- *
  * @author VAUBOURG Mandel
- *
  */
 public class IRCMessage {
-    String originalRaw = "";
-    String prefix = "";
-    List<String> parsedPrefix = new ArrayList<>();
-    CommandTypes command = null;
-    List<String> arguments = new ArrayList<>();
-    String trailing = "";
-    HashMap<String, String> messageTags = new HashMap<>();//IRCv3
+    String originalRaw;
+    String prefix;
+    List<String> parsedPrefix;
+    CommandTypes command;
+    List<String> arguments;
+    String trailing;
+    HashMap<String, String> messageTags;//IRCv3
 
 
    public IRCMessage(final String originalRaw,
