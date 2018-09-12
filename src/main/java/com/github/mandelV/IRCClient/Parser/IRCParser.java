@@ -17,7 +17,7 @@ public final class IRCParser {
      */
 
 
-    public static final IRCMessage parse(String input){
+    public static IRCMessage parse(String input){
         if(input == null || input.equals("")) return null;
 
         int cursor = 0;
@@ -60,6 +60,8 @@ public final class IRCParser {
             int startCursor = cursor;
 
             cursor = input.indexOf(" ", cursor);
+            if(cursor == -1) return null;
+
             String prefix_ = input.substring(startCursor, cursor-1);
             prefix = input.substring(startCursor+1, cursor);
 
@@ -121,7 +123,6 @@ public final class IRCParser {
 
         //TRAILING
         if(cursor != str.length()-1) trailling = str.substring(str.indexOf(':'), str.length()).replaceFirst(":","");
-
 
 
         return new IRCMessage(input, prefix, parsedPrefix, command, arguments, messageTags, trailling);

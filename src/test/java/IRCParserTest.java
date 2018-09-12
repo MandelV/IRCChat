@@ -5,35 +5,76 @@ import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+import java.util.Random;
+
 import static org.junit.Assert.fail;
 
-
+/**
+ * IRCParserTest
+ * @author VAUBOURG Mandel
+ */
 public class IRCParserTest {
 
+    /**
+     * Enable to generate random String.
+     * @param size Size of the String that will be generated. (-1 for random size between 1 and 512)
+     * @return Return random String.
+     */
+    private static String randomStringGenerator(int size){
+        Random rand = new Random();
+        if(size == -1) size = rand.nextInt(512) + 1;
+
+        char[] c = new char[size];
+        for(int i = 0; i < c.length; i++) c[i] = (char)(rand.nextInt(128-32)+32);
+
+        return new String(c);
+    }
+
     @Test
+    /**
+     * Test Parser with empty String.
+     */
     public void parseEmptyStringTest(){
 
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse(""));
     }
+
     @Test
+    /**
+     * Test Parser with wrong and random String.
+     */
     public void parseWrongStringTest(){
 
+        //TEST whith Wrong String.
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("/"));
-
-
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("   dddd ddd ddd ddqdqsdqsd "));
-
-
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("                                                        "));
-
-
         Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":d@a d d d d :c"));
-
-
         Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("@:@!"));
+
+        //TEST with random String.
+        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":" + randomStringGenerator(-1)));
+        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("@" + randomStringGenerator(-1)));
+        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("  " + randomStringGenerator(-1)));
+        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":"
+                + randomStringGenerator(64)
+                + "!"
+                + randomStringGenerator(64)
+                + "@"
+                + randomStringGenerator(64)
+                + " "
+                + randomStringGenerator(64)
+                + "#"
+                + randomStringGenerator(64)
+        ));
     }
 
     @Test
+    /**
+     * Test Parser with Right String and test if IRCMessage contain the right values.
+     * @see IRCMessage
+     */
     public void parseRightStringTest(){
         IRCMessage message;
 
