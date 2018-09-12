@@ -11,13 +11,14 @@ public final class IRCParser {
     /**
      * Parse raw input from server to IRCMessage
      *
-     * @param input String that will parsed
+     * @param s String that will parsed
      * @return input parsed in IRCMessage
      * @see IRCMessage
      */
 
 
-    public static IRCMessage parse(String input){
+    public static IRCMessage parse(String s){
+        String input = s;
         if(input == null || input.equals("")) return null;
 
         int cursor = 0;
@@ -91,27 +92,25 @@ public final class IRCParser {
 
         cursor = input.indexOf(' ', cursor);
         if(cursor == -1) cursor = input.length();
-        cmdStr = input.substring(startCursor, cursor);
+        cmdStr = input.substring(startCursor, cursor).toUpperCase();
 
         //Test if the command matches with the CommandTypes enum.
         for(CommandTypes cmd : CommandTypes.values()){
-            if(cmd.toString().toUpperCase().equals(cmdStr.toUpperCase())) command = cmd;
+            if(cmd.toString().equals(cmdStr)) command = cmd;
         }
 
-        if(command == null) return null;
-
-
-        if(cursor == input.length()-1) return null;
+        if(command == null || cursor == input.length()-1) return null;
         while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
+
 
         //PARAMETERS
         //if(cursor == -1) cursor = input.length()-1;
         String str = input.substring(cursor);
-        int strSize = str.length();
 
+        int strSize = str.length();
         cursor = str.indexOf(':');
 
-        if(cursor == -1)cursor = str.length()-1;
+        if(cursor == -1) cursor = str.length()-1;
         String param = "";
 
         if(cursor+1 <= str.length()) param = str.substring(0, cursor+1);
