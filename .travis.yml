@@ -4,7 +4,7 @@ env:
 before_install:
   - sudo apt-get install ngircd
   - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq .assets[0].browser_download_url)
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/5.0.275/codacy-coverage-reporter-5.0.274-assembly.jar
 after_success:
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
 
