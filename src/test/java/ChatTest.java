@@ -1,6 +1,6 @@
-import com.github.mandelV.IRCClient.chat.Chat;
-import com.github.mandelV.IRCClient.parser.IRCMessage;
-import com.github.mandelV.IRCClient.parser.IRCParser;
+import com.github.mandelV.ircclient.chat.Chat;
+import com.github.mandelV.ircclient.parser.IRCMessage;
+import com.github.mandelV.ircclient.parser.IRCParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

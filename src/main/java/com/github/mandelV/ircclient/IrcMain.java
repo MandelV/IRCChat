@@ -1,7 +1,7 @@
-package com.github.mandelV.IRCClient;
+package com.github.mandelV.ircclient;
 
-import com.github.mandelV.IRCClient.chat.Chat;
-import com.github.mandelV.IRCClient.client.IRCClient;
+import com.github.mandelV.ircclient.chat.Chat;
+import com.github.mandelV.ircclient.client.IRCClient;
 
 import java.util.Scanner;
 
@@ -11,11 +11,7 @@ import java.util.Scanner;
 public class IrcMain {
 
     public static void main(String[] args) {
-        String serverAddress = (args.length > 0) ? args[0] : "localhost";
-        String name = (args.length > 1) ? args[1] : "";
-        String nickname = (args.length > 2) ? args[2] : "";
-        String domain = (args.length > 3) ? args[3] : "";
-        String channel = (args.length > 4) ? args[4] : "";
+        if(args.length < 4) return;
 
         Scanner scanner = new Scanner(System.in);
         String message;
@@ -23,7 +19,7 @@ public class IrcMain {
 
 
         //client initialization final String channel, final String nickname, final String name, final String domain
-        IRCClient client =  IRCClient.getInstance(serverAddress, 6667, channel, nickname, name, domain);
+        IRCClient client =  IRCClient.getInstance(args[0], 6667, args[4], args[2], args[1], args[3]);
         Thread thread = new Thread(client);
         thread.start();
 

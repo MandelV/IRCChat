@@ -1,6 +1,6 @@
-import com.github.mandelV.IRCClient.chat.Chat;
-import com.github.mandelV.IRCClient.client.IRCClient;
-import com.github.mandelV.IRCClient.client.InstanciateException;
+import com.github.mandelV.ircclient.chat.Chat;
+import com.github.mandelV.ircclient.client.IRCClient;
+import com.github.mandelV.ircclient.client.InstanciateException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

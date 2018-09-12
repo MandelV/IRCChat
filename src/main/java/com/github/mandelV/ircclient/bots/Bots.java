@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.bots;
+package com.github.mandelV.ircclient.bots;
 
 import java.util.Observable;
 import java.util.Observer;

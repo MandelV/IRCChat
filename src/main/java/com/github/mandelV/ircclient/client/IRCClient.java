@@ -1,10 +1,10 @@
-package com.github.mandelV.IRCClient.client;
+package com.github.mandelV.ircclient.client;
 
-import com.github.mandelV.IRCClient.chat.Chat;
-import com.github.mandelV.IRCClient.parser.CommandTypes;
-import com.github.mandelV.IRCClient.parser.IRCMessage;
-import com.github.mandelV.IRCClient.parser.IRCParser;
-import com.github.mandelV.IRCClient.parser.PrefixPosition;
+import com.github.mandelV.ircclient.chat.Chat;
+import com.github.mandelV.ircclient.parser.CommandTypes;
+import com.github.mandelV.ircclient.parser.IRCMessage;
+import com.github.mandelV.ircclient.parser.IRCParser;
+import com.github.mandelV.ircclient.parser.PrefixPosition;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * IRCClient
+ * ircclient
  * @author Mandel VAUBOURG
  */
 public class IRCClient implements Runnable  {
@@ -67,7 +67,7 @@ public class IRCClient implements Runnable  {
      * @param nickname nickname
      * @param name real name
      * @param domain domain of user
-     * @return IRCClient instance if connection is success.
+     * @return ircclient instance if connection is success.
      */
     synchronized static public IRCClient getInstance(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
         try {
@@ -80,7 +80,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return IRCClient instance is not null.
+     * @return ircclient instance is not null.
      * @throws InstanciateException when instance of IRCChannel is null
      */
     synchronized static public IRCClient getInstance() throws InstanciateException{
@@ -233,7 +233,7 @@ public class IRCClient implements Runnable  {
                 break;
             case JOIN:
                 if(message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
-                    this.channel = message.getTrailing();
+                    this.setChannel(message.getTrailing());
 
                     Chat.displayMsg("You have joined the channel : " + this.channel);
 

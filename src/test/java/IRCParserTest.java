@@ -1,7 +1,7 @@
-import com.github.mandelV.IRCClient.parser.CommandTypes;
-import com.github.mandelV.IRCClient.parser.IRCMessage;
-import com.github.mandelV.IRCClient.parser.IRCParser;
-import com.github.mandelV.IRCClient.parser.PrefixPosition;
+import com.github.mandelV.ircclient.parser.CommandTypes;
+import com.github.mandelV.ircclient.parser.IRCMessage;
+import com.github.mandelV.ircclient.parser.IRCParser;
+import com.github.mandelV.ircclient.parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 

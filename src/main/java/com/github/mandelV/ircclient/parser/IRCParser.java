@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.parser;
+package com.github.mandelV.ircclient.parser;
 
 import java.util.*;
 
@@ -19,6 +19,7 @@ public final class IRCParser {
 
     public static IRCMessage parse(String ircMessage){
         String input = ircMessage;
+
 
         if(input == null || input.equals("")) return null;
 

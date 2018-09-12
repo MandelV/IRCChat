@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.parser;
+package com.github.mandelV.ircclient.parser;
 
 /**
  * CommandTypes

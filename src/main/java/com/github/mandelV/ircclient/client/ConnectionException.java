@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.client;
+package com.github.mandelV.ircclient.client;
 
 class ConnectionException extends Exception{
 
