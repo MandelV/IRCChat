@@ -31,6 +31,7 @@ public class IrcMain {
 
         while(!client.isStop()){
             message = scanner.nextLine();
+
             if(message.startsWith("/")){
                 message = message.substring(1);
                 client.send(message);
