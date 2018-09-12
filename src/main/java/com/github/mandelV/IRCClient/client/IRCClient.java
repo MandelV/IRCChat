@@ -1,10 +1,10 @@
 package com.github.mandelV.IRCClient.client;
 
 import com.github.mandelV.IRCClient.chat.Chat;
-import com.github.mandelV.IRCClient.Parser.CommandTypes;
-import com.github.mandelV.IRCClient.Parser.IRCMessage;
-import com.github.mandelV.IRCClient.Parser.IRCParser;
-import com.github.mandelV.IRCClient.Parser.PrefixPosition;
+import com.github.mandelV.IRCClient.parser.CommandTypes;
+import com.github.mandelV.IRCClient.parser.IRCMessage;
+import com.github.mandelV.IRCClient.parser.IRCParser;
+import com.github.mandelV.IRCClient.parser.PrefixPosition;
 
 import java.io.BufferedReader;
 import java.io.IOException;

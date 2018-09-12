@@ -1,9 +1,9 @@
-package com.github.mandelV.IRCClient.Parser;
+package com.github.mandelV.IRCClient.parser;
 
 import java.util.*;
 
 /**
- * IRC Parser
+ * IRC parser
  * @author Vaubourg Mandel
  */
 public final class IRCParser {

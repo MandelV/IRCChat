@@ -1,7 +1,7 @@
-import com.github.mandelV.IRCClient.Parser.CommandTypes;
-import com.github.mandelV.IRCClient.Parser.IRCMessage;
-import com.github.mandelV.IRCClient.Parser.IRCParser;
-import com.github.mandelV.IRCClient.Parser.PrefixPosition;
+import com.github.mandelV.IRCClient.parser.CommandTypes;
+import com.github.mandelV.IRCClient.parser.IRCMessage;
+import com.github.mandelV.IRCClient.parser.IRCParser;
+import com.github.mandelV.IRCClient.parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class IRCParserTest {
         return new String(c);
     }
     /**
-     * Test Parser with empty String.
+     * Test parser with empty String.
      */
     @Test
     public void parseEmptyStringTest(){
@@ -40,7 +40,7 @@ public class IRCParserTest {
     }
 
     /**
-     * Test Parser with wrong and random String.
+     * Test parser with wrong and random String.
      */
     @Test
     public void parseWrongStringTest(){
@@ -70,7 +70,7 @@ public class IRCParserTest {
     }
 
     /**
-     * Test Parser with Right String and test if IRCMessage contain the right values.
+     * Test parser with Right String and test if IRCMessage contain the right values.
      * @see IRCMessage
      */
     @Test

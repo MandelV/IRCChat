@@ -1,6 +1,6 @@
 package com.github.mandelV.IRCClient.chat;
 
-import com.github.mandelV.IRCClient.Parser.IRCMessage;
+import com.github.mandelV.IRCClient.parser.IRCMessage;
 
 import java.util.ArrayList;
 import java.util.List;

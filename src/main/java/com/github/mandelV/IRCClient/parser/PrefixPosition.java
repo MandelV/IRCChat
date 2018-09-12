@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.Parser;
+package com.github.mandelV.IRCClient.parser;
 
 /***
  * PrefixPosition
