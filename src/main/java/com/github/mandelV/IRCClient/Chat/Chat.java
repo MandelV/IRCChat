@@ -2,9 +2,6 @@ package com.github.mandelV.IRCClient.Chat;
 
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -15,36 +12,18 @@ import java.util.Observable;
  */
 public class Chat extends Observable {
 
-    private int nbrMessageDisplayed;
-    List<IRCMessage> messages;
-    private File logFile;
-    private PrintWriter writer;
-    private FileReader reader;
-
+    private List<IRCMessage> messages;
     private static Chat instance = null;
 
 
-
-    private Chat(final int nbrMessageDisplayed){
-        this.nbrMessageDisplayed = (nbrMessageDisplayed == 0) ? 1 : nbrMessageDisplayed;
+    private Chat(){
         this.messages = new ArrayList<>();
-        this.logFile = new File("chat");
     }
 
 
-    synchronized static public Chat getInstance(final int nbrMessageDisplayed){
-        instance = (instance == null) ? new Chat(nbrMessageDisplayed) : instance;
+    static public Chat getInstance(){
+        instance = (instance == null) ? new Chat() : instance;
         return instance;
-    }
-    synchronized static public Chat getInstance(){
-        instance = (instance == null) ? new Chat(10) : instance;
-        return instance;
-    }
-    public void logMessage(final String msg){
-
-    }
-
-    public void logMessage(){
     }
 
    synchronized public void pushMessage(final IRCMessage msg){

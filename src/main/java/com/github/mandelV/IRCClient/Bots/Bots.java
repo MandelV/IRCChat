@@ -7,14 +7,8 @@ import java.util.Observer;
  * Bots
  * @author VAUBOURG Mandel
  */
-public class Bots implements Observer {
-
-    private String name;
-    private String nickname;
+public interface Bots extends Observer {
 
     @Override
-    public void update(Observable o, Object arg) {
-
-
-    }
+    void update(Observable o, Object arg);
 }

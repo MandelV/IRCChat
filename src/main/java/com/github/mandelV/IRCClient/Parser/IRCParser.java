@@ -85,11 +85,9 @@ public final class IRCParser {
 
 
         //COMMAND
-        String cmdStr = "";
+        String cmdStr;
         int startCursor = cursor;
-        if(cursor == 0){
-            startCursor = 0;
-        }
+
 
         cursor = input.indexOf(' ', cursor);
         if(cursor == -1) cursor = input.length();
@@ -103,12 +101,13 @@ public final class IRCParser {
         if(command == null) return null;
 
 
-        if(cursor == input.length()-1 && command == null) return null;
+        if(cursor == input.length()-1) return null;
         while(cursor < input.length() && input.charAt(cursor) == ' ') cursor++;
 
         //PARAMETERS
-        if(cursor == -1) cursor = input.length()-1;
+        //if(cursor == -1) cursor = input.length()-1;
         String str = input.substring(cursor);
+        int strSize = str.length();
 
         cursor = str.indexOf(':');
 
@@ -122,8 +121,7 @@ public final class IRCParser {
         while (args.hasMoreTokens()) arguments.add(args.nextToken());
 
         //TRAILING
-        if(cursor != str.length()-1) trailling = str.substring(str.indexOf(':'), str.length()).replaceFirst(":","");
-
+        if(cursor != str.length()-1) trailling = str.substring(str.indexOf(':'), strSize).replaceFirst(":","");
 
         return new IRCMessage(input, prefix, parsedPrefix, command, arguments, messageTags, trailling);
     }

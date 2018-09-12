@@ -9,7 +9,7 @@ public enum PrefixPosition {
 
     private final int value;
 
-    private PrefixPosition(int value) {
+     PrefixPosition(int value) {
         this.value = value;
     }
 

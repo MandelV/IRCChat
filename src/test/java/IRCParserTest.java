@@ -29,20 +29,19 @@ public class IRCParserTest {
 
         return new String(c);
     }
-
-    @Test
     /**
      * Test Parser with empty String.
      */
+    @Test
     public void parseEmptyStringTest(){
 
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse(""));
     }
 
-    @Test
     /**
      * Test Parser with wrong and random String.
      */
+    @Test
     public void parseWrongStringTest(){
 
         //TEST whith Wrong String.
@@ -69,11 +68,11 @@ public class IRCParserTest {
         ));
     }
 
-    @Test
     /**
      * Test Parser with Right String and test if IRCMessage contain the right values.
      * @see IRCMessage
      */
+    @Test
     public void parseRightStringTest(){
         IRCMessage message;
 
@@ -102,7 +101,9 @@ public class IRCParserTest {
         message = IRCParser.parse("@tag1=value1 :Test!Unit@Host.fr JOIN #channel");
         Assert.assertNotNull("parseEmptyStringTest : message is not null", message);
 
+        if(!message.getOriginalRaw().equals("@tag1=value1 :Test!Unit@Host.fr JOIN #channel")) fail("message don't matches");
         if(!message.getTags().get("tag1").equals("value1")) fail("tag does not matches");
+        if(message.getParsedPrefix().size() != 3) fail("Wrong size prefix");
         if(!message.getPrefix().equals("Test!Unit@Host.fr")) fail("prefix does not matches");
         if(message.getCommand() != CommandTypes.JOIN) fail("command does not matches");
         if(!message.getArguments().get(0).equals("#channel")) fail("argument does not matches");
