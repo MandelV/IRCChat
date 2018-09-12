@@ -1,10 +1,10 @@
-package com.github.mandelV.IRCClient.Bots;
+package com.github.mandelV.IRCClient.bots;
 
 import java.util.Observable;
 import java.util.Observer;
 
 /**
- * Bots
+ * bots
  * @author VAUBOURG Mandel
  */
 public interface Bots extends Observer {

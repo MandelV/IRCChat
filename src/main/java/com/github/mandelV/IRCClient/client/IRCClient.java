@@ -1,6 +1,6 @@
-package com.github.mandelV.IRCClient.Client;
+package com.github.mandelV.IRCClient.client;
 
-import com.github.mandelV.IRCClient.Chat.Chat;
+import com.github.mandelV.IRCClient.chat.Chat;
 import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
@@ -161,10 +161,13 @@ public class IRCClient implements Runnable  {
      * @param msg msg send to server
      */
     synchronized public void send(String msg){
-
         if(msg == null) return;
-        this.processingMessage(IRCParser.parse(msg));
-        this.writer.write(msg + "\r\n");
+
+        String cmd = msg;
+        if( msg.charAt(0) == '/') cmd = msg.substring(1);
+
+        this.processingMessage(IRCParser.parse(cmd));
+        this.writer.write(cmd + "\r\n");
         this.writer.flush();
 
 
@@ -219,6 +222,7 @@ public class IRCClient implements Runnable  {
 
             case PING:
                 this.send("PONG :" + message.getTrailing());
+                //System.out.println("PONG :" + message.getTrailing());
                 break;
             case PRIVMSG:
 
@@ -228,9 +232,9 @@ public class IRCClient implements Runnable  {
                 }
                 break;
             case JOIN:
-
                 if(message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
-                    this.setChannel(message.getTrailing());
+                    this.channel = message.getTrailing();
+
                     Chat.displayMsg("You have joined the channel : " + this.channel);
 
                 }else if(!message.getPrefix().isEmpty()) {
@@ -255,7 +259,6 @@ public class IRCClient implements Runnable  {
             case NAMES:
                 break;
                 default:
-                    Chat.displayMsg("command unknow");
                     break;
         }
     }

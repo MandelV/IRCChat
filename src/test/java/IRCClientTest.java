@@ -1,6 +1,6 @@
-import com.github.mandelV.IRCClient.Chat.Chat;
-import com.github.mandelV.IRCClient.Client.IRCClient;
-import com.github.mandelV.IRCClient.Client.InstanciateException;
+import com.github.mandelV.IRCClient.chat.Chat;
+import com.github.mandelV.IRCClient.client.IRCClient;
+import com.github.mandelV.IRCClient.client.InstanciateException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class IRCClientTest {
 
         client.send("QUIT :stopTEST");//Will stop the thread.
         Thread.sleep(1000);//Wait for stop Thread
-        if(client.isStop()) fail("Client has not stopped");
+        if(client.isStop()) fail("client has not stopped");
         if(threadClient.isAlive()) fail("Error thread is alive");
 
     }

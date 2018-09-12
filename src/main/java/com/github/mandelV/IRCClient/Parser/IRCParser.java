@@ -11,14 +11,15 @@ public final class IRCParser {
     /**
      * Parse raw input from server to IRCMessage
      *
-     * @param s String that will parsed
+     * @param ircMessage String that will parsed
      * @return input parsed in IRCMessage
      * @see IRCMessage
      */
 
 
-    public static IRCMessage parse(String s){
-        String input = s;
+    public static IRCMessage parse(String ircMessage){
+        String input = ircMessage;
+
         if(input == null || input.equals("")) return null;
 
         int cursor = 0;

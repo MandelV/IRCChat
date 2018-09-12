@@ -21,10 +21,11 @@ public class IRCParserTest {
      * @return Return random String.
      */
     private static String randomStringGenerator(int size){
+        int lenght = size;
         Random rand = new Random();
-        if(size == -1) size = rand.nextInt(512) + 1;
+        if(lenght == -1) lenght = rand.nextInt(512) + 1;
 
-        char[] c = new char[size];
+        char[] c = new char[lenght];
         for(int i = 0; i < c.length; i++) c[i] = (char)(rand.nextInt(128-32)+32);
 
         return new String(c);
@@ -102,10 +103,15 @@ public class IRCParserTest {
         Assert.assertNotNull("parseEmptyStringTest : message is not null", message);
 
         if(!message.getOriginalRaw().equals("@tag1=value1 :Test!Unit@Host.fr JOIN #channel")) fail("message don't matches");
+
         if(!message.getTags().get("tag1").equals("value1")) fail("tag does not matches");
+
         if(message.getParsedPrefix().size() != 3) fail("Wrong size prefix");
+
         if(!message.getPrefix().equals("Test!Unit@Host.fr")) fail("prefix does not matches");
+
         if(message.getCommand() != CommandTypes.JOIN) fail("command does not matches");
+
         if(!message.getArguments().get(0).equals("#channel")) fail("argument does not matches");
     }
 }
