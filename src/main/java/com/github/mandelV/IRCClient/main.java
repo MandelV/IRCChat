@@ -12,6 +12,7 @@ import java.util.Scanner;
  */
 public class main {
 
+
     public static void main(String[] args) {
         String serverAddress = (args.length > 0) ? args[0] : "localhost";
         String name = (args.length > 1) ? args[1] : "";

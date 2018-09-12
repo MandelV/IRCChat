@@ -31,6 +31,7 @@ public class Chat extends Observable {
         this.logFile = new File("chat");
     }
 
+
     synchronized static public Chat getInstance(final int nbrMessageDisplayed){
         instance = (instance == null) ? new Chat(nbrMessageDisplayed) : instance;
         return instance;
@@ -51,6 +52,10 @@ public class Chat extends Observable {
         this.setChanged();
         this.notifyObservers(msg);
 
+    }
+
+    public List<IRCMessage> getMessages() {
+        return messages;
     }
 
     public static void displayMsg(final String msg){

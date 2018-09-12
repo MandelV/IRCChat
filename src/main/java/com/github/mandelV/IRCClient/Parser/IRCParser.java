@@ -99,7 +99,7 @@ public final class IRCParser {
         for(CommandTypes cmd : CommandTypes.values()){
             if(cmd.toString().toUpperCase().equals(cmdStr.toUpperCase())) command = cmd;
         }
-
+        //if(command == CommandTypes.PONG) System.out.println("PONGPONG");
         if(command == null) return null;
 
 

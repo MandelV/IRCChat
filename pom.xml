@@ -55,7 +55,7 @@
 
                     <archive>
                         <manifest>
-                            <mainClass>com.github.mandelV.IRCClient.main</mainClass>
+                            <mainClass>com.github.mandelV.IRCClientTest.main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

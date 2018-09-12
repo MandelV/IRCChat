@@ -1,0 +1,55 @@
+import com.github.mandelV.IRCClient.Chat.Chat;
+import com.github.mandelV.IRCClient.Client.IRCClient;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.fail;
+
+/**
+ * IRCClientTest
+ * @author VAUBOURG Mandel
+ */
+public class IRCClientTest {
+
+    private static IRCClient client;
+    private static Thread threadClient;
+    @BeforeClass
+    public static void instanciateTest(){
+        client = IRCClient.getInstance("localhost", 6667, "#help", "test", "unit", "localhost");
+
+        if(client == null) fail("Error connect");
+
+        threadClient = new Thread(client);
+        threadClient.start();
+    }
+
+    @Test
+    public void connectionTest(){
+
+        client.send("ping :00UNITTESTPING00");
+        if(!Chat.getInstance().getMessages().get(Chat.getInstance().getMessages().size()-1).getTrailing().equals("00UNITTESTPING00"))
+            fail("Test connection by Ping fail");
+
+    }
+
+    @Test
+    public void setChannelTest() throws InterruptedException {
+
+        Thread.sleep(1000);
+        client.send("join #help");
+        if(!client.getChannel().equals("#help")) fail("set Channel failed");
+        client.send("PRIVMSG " + client.getChannel() + " :" + "UNIT TESTS");
+
+    }
+
+    @AfterClass
+    public static void stopTest() throws InterruptedException {
+
+        client.send("QUIT :stopTEST");//Will stop the thread.
+        Thread.sleep(1000);//Wait for stop Thread
+        if(!client.isStop()) fail("Client has not stopped");
+        if(threadClient.isAlive()) fail("Error thread is alive");
+
+    }
+}

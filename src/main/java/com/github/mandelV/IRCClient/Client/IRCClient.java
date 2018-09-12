@@ -36,7 +36,7 @@ public class IRCClient implements Runnable  {
      * @param address
      * @param port
      */
-    private IRCClient(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
+    private IRCClient(final String address, final int port, final String channel, final String nickname, final String name, final String domain) throws ConnectionException{
 
         this.channel = channel;
         this.nickname = nickname;
@@ -49,13 +49,16 @@ public class IRCClient implements Runnable  {
             this.writer = new PrintWriter(socket.getOutputStream());
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            System.out.println("initial connection error : " + e.toString());
-
+            throw new ConnectionException("Error connection : " + e.toString());
         }
     }
 
     synchronized static public IRCClient getInstance(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
-        instance = (instance == null) ? new IRCClient(address, port, channel, nickname, name, domain) : instance;
+        try {
+            instance = (instance == null) ? new IRCClient(address, port, channel, nickname, name, domain) : instance;
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+        }
         return instance;
     }
     synchronized static public IRCClient getInstance() throws InstanciateException{
@@ -72,11 +75,11 @@ public class IRCClient implements Runnable  {
     synchronized public boolean isStop() {
         return stop;
     }
-
+    synchronized public void stop() {this.stop = true;}
     /**
      *
      */
-    private void connect(){
+    public void connect(){
         this.send("NICK " + nickname);
         this.send("USER " + nickname + " " + name + " " + domain + " :realname");
     }
@@ -179,6 +182,7 @@ public class IRCClient implements Runnable  {
             case JOIN:
 
                 if(message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
+                    System.out.println(message.getTrailing());
                     this.channel = message.getTrailing();
                     Chat.displayMsg("You have joined the channel : " + this.channel);
 

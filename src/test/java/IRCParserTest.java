@@ -5,7 +5,6 @@ import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.charset.Charset;
 import java.util.Random;
 
 import static org.junit.Assert.fail;
