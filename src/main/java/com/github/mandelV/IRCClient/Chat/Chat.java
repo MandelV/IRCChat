@@ -1,4 +1,4 @@
-package com.github.mandelV.IRCClient.Chat;
+package com.github.mandelV.IRCClient.chat;
 
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 
