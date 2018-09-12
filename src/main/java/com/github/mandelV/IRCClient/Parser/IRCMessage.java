@@ -8,22 +8,23 @@ import java.util.List;
  * @author VAUBOURG Mandel
  */
 public class IRCMessage {
-    String originalRaw;
-    String prefix;
-    List<String> parsedPrefix;
-    CommandTypes command;
-    List<String> arguments;
-    String trailing;
-    HashMap<String, String> messageTags;//IRCv3
+
+    private String originalRaw;
+    private String prefix;
+    private List<String> parsedPrefix;
+    private CommandTypes command;
+    private List<String> arguments;
+    private String trailing;
+    private HashMap<String, String> messageTags;//IRCv3
 
 
-   public IRCMessage(final String originalRaw,
-                     final String prefix,
-                     final List<String> parsedPrefix,
-                     final CommandTypes commandTypes,
-                     final List<String> arguments,
-                     final HashMap<String, String> messageTags,
-                     final String trailing){
+   IRCMessage(final String originalRaw,
+              final String prefix,
+              final List<String> parsedPrefix,
+              final CommandTypes commandTypes,
+              final List<String> arguments,
+              final HashMap<String, String> messageTags,
+              final String trailing){
 
 
        this.originalRaw = originalRaw;

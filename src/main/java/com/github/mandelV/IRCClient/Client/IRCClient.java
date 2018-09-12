@@ -19,7 +19,7 @@ import java.net.Socket;
 public class IRCClient implements Runnable  {
     private String address;
     private int port;
-    private String channel = "";
+    private String channel;
     private String nickname;
     private String name;
     private String  domain;
@@ -28,23 +28,37 @@ public class IRCClient implements Runnable  {
     private BufferedReader reader;
     private boolean stop = false;
     private static IRCClient instance;
-    private boolean v = false;
 
 
     /**
+     * Default constructor
+     * @throws ConnectionException when connection fails
+     */
+    private IRCClient() throws ConnectionException {
+        this("localhost",6667 , "#help", "Default", "Default", "localhost");
+    }
+
+    /**
      *
-     * @param address
-     * @param port
+     * @param address address ip
+     * @param port port
+     * @param channel channel irc
+     * @param nickname nickname
+     * @param name real name
+     * @param domain domain of user
+     * @throws ConnectionException when connection fails
      */
     private IRCClient(final String address, final int port, final String channel, final String nickname, final String name, final String domain) throws ConnectionException{
 
+        this.address = address;
+        this.port = port;
         this.channel = channel;
         this.nickname = nickname;
         this.name = name;
         this.domain = domain;
 
         try {
-            this.socket = new Socket(address, port);
+            this.socket = new Socket(this.address, this.port);
             Chat.displayMsg("initial connection success !");
             this.writer = new PrintWriter(socket.getOutputStream());
             this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -53,6 +67,16 @@ public class IRCClient implements Runnable  {
         }
     }
 
+    /**
+     *
+     * @param address address ip
+     * @param port port
+     * @param channel channel irc
+     * @param nickname nickname
+     * @param name real name
+     * @param domain domain of user
+     * @return IRCClient instance if connection is success.
+     */
     synchronized static public IRCClient getInstance(final String address, final int port, final String channel, final String nickname, final String name, final String domain){
         try {
             instance = (instance == null) ? new IRCClient(address, port, channel, nickname, name, domain) : instance;
@@ -61,6 +85,12 @@ public class IRCClient implements Runnable  {
         }
         return instance;
     }
+
+    /**
+     *
+     * @return IRCClient instance is not null.
+     * @throws InstanciateException when instance of IRCChannel is null
+     */
     synchronized static public IRCClient getInstance() throws InstanciateException{
 
         if(instance == null) throw new InstanciateException("Instance is null");
@@ -70,14 +100,48 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return
+     * @return the domain of user
+     */
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     *
+     * @return port
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     *
+     * @return address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     *
+     * @return real name
+     */
+    public String getName() {
+        return name;
+    }
+
+
+    /**
+     *
+     * @return if the loop is stopped
      */
     synchronized public boolean isStop() {
         return stop;
     }
     synchronized public void stop() {this.stop = true;}
+
     /**
-     *
+     * allow to connect to irc server
      */
     public void connect(){
         this.send("NICK " + nickname);
@@ -86,7 +150,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @param channel
+     * @param channel set channel
      */
     public void setChannel(String channel) {
         this.channel = channel;
@@ -94,7 +158,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return
+     * @return the channel
      */
     public String getChannel() {
         return channel;
@@ -102,7 +166,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return
+     * @return nickname
      */
     public String getNickname() {
         return nickname;
@@ -110,7 +174,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @param msg
+     * @param msg msg send to server
      */
     synchronized public void send(String msg){
 
@@ -124,7 +188,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return
+     * @return msg send by server
      */
     private String receive(){
         String line = " ";
@@ -138,7 +202,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @return
+     * @return if the received message is ready to read
      */
     private boolean receiveIsReady() {
         try {
@@ -151,7 +215,7 @@ public class IRCClient implements Runnable  {
 
     /**
      *
-     * @param message
+     * @param message proccess the message
      */
     synchronized private void processingMessage(IRCMessage message){
         if(message == null) return;
@@ -182,7 +246,6 @@ public class IRCClient implements Runnable  {
             case JOIN:
 
                 if(message.getPrefix(PrefixPosition.FIRST).equals(this.nickname)){
-                    System.out.println(message.getTrailing());
                     this.channel = message.getTrailing();
                     Chat.displayMsg("You have joined the channel : " + this.channel);
 
@@ -209,9 +272,8 @@ public class IRCClient implements Runnable  {
                 break;
         }
     }
-    /**
-     *
-     */
+
+
     public void run() {
 
       this.connect();
