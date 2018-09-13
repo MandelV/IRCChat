@@ -1,7 +1,6 @@
 package com.github.mandelV.IRCClient.Client;
 
 import com.github.mandelV.IRCClient.Chat.Chat;
-import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
 import com.github.mandelV.IRCClient.Parser.PrefixPosition;
