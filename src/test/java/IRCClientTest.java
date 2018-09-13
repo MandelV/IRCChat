@@ -42,7 +42,7 @@ public class IRCClientTest {
     @Test
     public void connectionTest(){
 
-        client.send("ping :00UNITTESTPING00");
+        client.send("PING :00UNITTESTPING00");
         if(!Chat.getInstance().getMessages().get(Chat.getInstance().getMessages().size()-1).getTrailing().equals("00UNITTESTPING00"))
             fail("Test connection by Ping fail");
 

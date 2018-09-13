@@ -203,6 +203,8 @@ public class IRCClient implements Runnable  {
      */
     synchronized private void processingMessage(IRCMessage message){
         if(message == null) return;
+
+        Chat.getInstance().pushMessage(message);
         switch (message.getCommand()){
 
             case PING:
