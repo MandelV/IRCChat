@@ -21,10 +21,11 @@ public class IRCParserTest {
      * @return Return random String.
      */
     private static String randomStringGenerator(int size){
+        int randSize = size;
         Random rand = new Random();
-        if(size == -1) size = rand.nextInt(512) + 1;
+        if(randSize == -1) randSize = rand.nextInt(512) + 1;
 
-        char[] c = new char[size];
+        char[] c = new char[randSize];
         for(int i = 0; i < c.length; i++) c[i] = (char)(rand.nextInt(128-32)+32);
 
         return new String(c);

@@ -203,19 +203,7 @@ public class IRCClient implements Runnable  {
      */
     synchronized private void processingMessage(IRCMessage message){
         if(message == null) return;
-        CommandTypes commandTypes = null;
-
-        //determines what kind of cmd in message
-        for(CommandTypes cmd : CommandTypes.values()){
-            if(message.getCommand().toString().equals(cmd.toString())){
-                commandTypes = cmd;
-                break;
-            }
-        }
-        Chat.getInstance().pushMessage(message);
-        if(commandTypes == null) return;
-
-        switch (commandTypes){
+        switch (message.getCommand()){
 
             case PING:
                 this.send("PONG :" + message.getTrailing());
