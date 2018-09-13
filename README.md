@@ -1,2 +1,2 @@
-# IRCChat
+# IRCChat [![Build Status](https://travis-ci.com/MandelV/IRCChat.svg?branch=develop)](https://travis-ci.com/MandelV/IRCChat) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fb9283a84613451fb6e6ace400ffcec5)](https://www.codacy.com/app/Akitoshi/IRCChat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MandelV/IRCChat&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fb9283a84613451fb6e6ace400ffcec5)](https://www.codacy.com/app/Akitoshi/IRCChat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MandelV/IRCChat&amp;utm_campaign=Badge_Coverage)
 Simple IRC chat.
