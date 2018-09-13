@@ -255,7 +255,6 @@ public class IRCClient implements Runnable  {
             case NAMES:
                 break;
                 default:
-                    Chat.displayMsg("command unknow");
                     break;
         }
     }
