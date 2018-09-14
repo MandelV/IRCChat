@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 /**
@@ -163,7 +164,9 @@ public class IRCClient implements Runnable  {
     synchronized public void send(String msg){
 
         if(msg == null) return;
-        this.processingMessage(IRCParser.parse(msg));
+
+        IRCParser.parseV2(msg).ifPresent(this::processingMessage);
+
         this.writer.write(msg + "\r\n");
         this.writer.flush();
 
@@ -174,13 +177,16 @@ public class IRCClient implements Runnable  {
      *
      * @return msg send by server
      */
-    private String receive(){
-        String line = " ";
+    private Optional<String> receive(){
+
         try {
-            if(reader.ready()) line = reader.readLine();
-            return line;
+
+            if(!reader.ready()) return Optional.empty();
+
+            return Optional.of(reader.readLine());
         } catch (IOException e) {
-            return e.toString();
+            System.out.println(e.toString());
+            return Optional.empty();
         }
     }
 
@@ -259,10 +265,7 @@ public class IRCClient implements Runnable  {
                //IRCMessage message = IRCParser.parse(this.receive());
                //this.processingMessage(message);
 
-
-               String msg = this.receive();
-               System.out.println(msg);
-               IRCParser.parseV2(msg);
+               this.receive().ifPresent(v -> IRCParser.parseV2(v).ifPresent(this::processingMessage));
 
 
            }

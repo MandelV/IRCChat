@@ -1,5 +1,6 @@
 package com.github.mandelV.IRCClient.Parser;
 
+import com.github.mandelV.IRCClient.Chat.Chat;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
@@ -25,13 +26,12 @@ public final class IRCParser {
      */
     private static IrcGrammarParser getParser(final String input){
         if(input == null || input.isEmpty()) return null;
-
         IrcGrammarLexer lexer = new IrcGrammarLexer(new ANTLRInputStream(input));
-        lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        //lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         IrcGrammarParser parser = new IrcGrammarParser(tokenStream);
-        if(parser.ircMessage().isEmpty()) return null;
         parser.reset();
+
         return parser;
     }
     /**
@@ -43,8 +43,9 @@ public final class IRCParser {
     private static Optional<String> getPrefix(final String ircMessage){
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser == null || parser.ircMessage().first().PREFIX() == null) return Optional.empty();
-
+        if(parser == null || parser.ircMessage().first() == null) return Optional.empty();
+        parser.reset();
+        if(parser.ircMessage().first().PREFIX() == null) return Optional.empty();
         parser.reset();
 
         return Optional.of(parser.ircMessage().first().PREFIX().toString());
@@ -58,8 +59,9 @@ public final class IRCParser {
         IrcGrammarParser parser = getParser(ircMessage);
 
         HashMap<String, String> tags = new HashMap<>();
-        if(parser == null || parser.ircMessage().first().TAGS() == null) return Optional.empty();
+        if(parser == null || parser.ircMessage().first() == null) return Optional.empty();
         parser.reset();
+        if(parser.ircMessage().first().TAGS() == null) return Optional.empty();
 
         StringTokenizer tokenizer = new StringTokenizer(parser.ircMessage().first().TAGS().toString(), "@;");
 
@@ -83,10 +85,14 @@ public final class IRCParser {
 
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser == null || parser.ircMessage().cmd().isEmpty()) return Optional.empty();
+        if(parser.ircMessage().cmd() == null) return Optional.empty();
+        parser.reset();
+        if(parser.ircMessage().cmd().isEmpty()) return Optional.empty();
         parser.reset();
 
-        CommandTypes cmd = CommandTypes.getValue(parser.ircMessage().cmd().STRING().toString().toUpperCase());
+
+        String c = parser.ircMessage().cmd().STRING().toString().toUpperCase();
+        CommandTypes cmd = CommandTypes.getValue(c);
 
         if(cmd == null) return Optional.empty();
 
@@ -103,7 +109,7 @@ public final class IRCParser {
 
         List<String> arguments = new ArrayList<>();
 
-        if(parser == null || parser.ircMessage().args().isEmpty()) return Optional.empty();
+        if(parser == null || parser.ircMessage().args() == null) return Optional.empty();
         parser.reset();
 
         for(TerminalNode node : parser.ircMessage().args().STRING()) arguments.add(node.toString());
@@ -126,6 +132,16 @@ public final class IRCParser {
 
         return Optional.of(parser.ircMessage().trailling().getText());
     }
+    private static Optional<String> getError(final String ircMessage){
+
+        IrcGrammarParser parser = getParser(ircMessage);
+
+        if(parser == null || parser.ircMessage().error() == null) return Optional.empty();
+        parser.reset();
+
+        return Optional.of(parser.ircMessage().error().getText());
+
+    }
     /**
      * @param input String to be parsed.
      * @return Optional Parsed message (if parsing has failed Optional will be empty)
@@ -136,8 +152,11 @@ public final class IRCParser {
         String ircMessage = input;
         if(ircMessage == null || ircMessage.isEmpty()) return Optional.empty();
 
-
         if(ircMessage.charAt(0) == '/') ircMessage = ircMessage.replaceFirst("/", "");
+
+        Optional<String> error = getError(ircMessage);
+        error.ifPresent(Chat::displayMsg);
+        if(error.isPresent()) return Optional.empty();
 
         String prefix;
 
@@ -154,24 +173,36 @@ public final class IRCParser {
         StringTokenizer tokenizer = new StringTokenizer(prefix, ":!@");
         while (tokenizer.hasMoreTokens()) parsedPrefix.add(tokenizer.nextToken());
 
+        //System.out.println("prefix : " + prefix);
+
         //GET TAGS
         tags = getTags(ircMessage).orElse(new HashMap<>());
+
+        //System.out.println("tag : " +tags.toString());
 
 
         //GET COMMAND
         try {
-            command = getCommand(ircMessage).orElseThrow(() -> new CommandException("Wrong command !"));
+            command = getCommand(ircMessage).orElseThrow(() -> new CommandException("Command exception"));
         } catch (CommandException e) {
-            System.out.println(e.toString());
             return Optional.empty();
         }
+
+        //System.out.println("command : "+ command.toString());
+
 
         //GET ARGUMENTS
         arguments = getArguments(ircMessage).orElse(new ArrayList<>());
 
+
+
+        //System.out.println("arg : " +arguments);
+
         //GET TRAILLING
         trailing = getTralling(ircMessage).orElse("");
         trailing = trailing.replaceFirst(":", "");
+
+        //System.out.println("trailling : " +trailing);
 
         return Optional.of(new IRCMessage(ircMessage, prefix, parsedPrefix, command, arguments, tags, trailing));
     }
@@ -181,7 +212,7 @@ public final class IRCParser {
      * @return String parsed
      * @see IRCMessage
      */
-    public static IRCMessage parse(String s){
+    /*public static IRCMessage parse(String s){
         String input = s;
         if(input == null || input.equals("")) return null;
 
@@ -287,5 +318,5 @@ public final class IRCParser {
         if(cursor != str.length()-1) trailling = str.substring(str.indexOf(':'), strSize).replaceFirst(":","");
 
         return new IRCMessage(input, prefix, parsedPrefix, command, arguments, messageTags, trailling);
-    }
+    }*/
 }

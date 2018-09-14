@@ -38,21 +38,24 @@ STRING : [a-zA-Z0-9*#.'!éàè_()&$^;,@-]+;
 
 
 
-ircMessage : first? cmd?  args?  trailling? ;
+ircMessage : (first cmd  args?  trailling?) | error? ;
 
-first : (TAGS? PREFIX?) | NOTICE?;
+first : TAGS? PREFIX?;
 
 TAGS : (' '+)? '@'Tag+;
 
 PREFIX : (' '+)?':'STRING'!'STRING'@'STRING;
 
-NOTICE : (' '+)?':'STRING(' '+)?'NOTICE'(' '+)? '*'(' '+)?':***'(' '+)? .*;
+
+
+error : (' '+)?'ERROR' (' '+)?':' .* ':'(' '+)? STRING'['STRING']' .*;
+
 
 cmd : (' '+)?STRING(' '+)?;
 
 args : (STRING(' '+)?)+ ;
 
-trailling : ':' .*;
+trailling : (' '+)?':' .*;
 
 
 
