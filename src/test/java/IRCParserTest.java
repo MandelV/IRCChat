@@ -1,6 +1,7 @@
 import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
+import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -100,6 +101,12 @@ public class IRCParserTest {
             String testMessage = "@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !";
             //prefix
             Assert.assertEquals("Test prefix : " + testMessage, ":Test!Unit@Host.fr", message.getPrefix());
+
+            Assert.assertEquals("Test parsedPrefix : " + testMessage,"Test", message.getPrefix(PrefixPosition.FIRST));
+            Assert.assertEquals("Test parsedPrefix : " + testMessage,"Unit", message.getPrefix(PrefixPosition.SECOND));
+            Assert.assertEquals("Test parsedPrefix : " + testMessage,"Host.fr", message.getPrefix(PrefixPosition.THIRD));
+
+
             //command
             Assert.assertEquals("Test command : " +testMessage, CommandTypes.JOIN, message.getCommand());
 
