@@ -38,7 +38,6 @@ public class IRCParserTest {
 
         Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse(""));
     }
-
     /**
      * Test Parser with wrong and random String.
      */
@@ -68,7 +67,6 @@ public class IRCParserTest {
                 + randomStringGenerator(64)
         ));
     }
-
     /**
      * Test Parser with Right String and test if IRCMessage contain the right values.
      * @see IRCMessage
@@ -108,5 +106,16 @@ public class IRCParserTest {
         if(!message.getPrefix().equals("Test!Unit@Host.fr")) fail("prefix does not matches");
         if(message.getCommand() != CommandTypes.JOIN) fail("command does not matches");
         if(!message.getArguments().get(0).equals("#channel")) fail("argument does not matches");
+    }
+
+
+    @Test
+    public void parseV2WrongStringTest(){
+
+        Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("/"));
+
+        if(IRCParser.parseV2("!"
+                + randomStringGenerator(64)).isPresent()) fail("fail");
+
     }
 }

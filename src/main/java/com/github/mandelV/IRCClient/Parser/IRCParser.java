@@ -1,10 +1,8 @@
 package com.github.mandelV.IRCClient.Parser;
 
-
-
-
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.*;
@@ -18,55 +16,74 @@ public final class IRCParser {
 
 
     /**
-     *
-     * @param input
-     * @return
+     * @param input String to be parsed
+     * @return parser that will be used to get part of the input.
+     * @see org.antlr.v4.parse.ANTLRParser
+     * @see org.antlr.v4.parse.ANTLRLexer
+     * @see CommonTokenStream
+     * @see ANTLRInputStream
      */
     private static IrcGrammarParser getParser(final String input){
+        if(input == null || input.isEmpty()) return null;
 
         IrcGrammarLexer lexer = new IrcGrammarLexer(new ANTLRInputStream(input));
+        lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        return new IrcGrammarParser(tokenStream);
+        IrcGrammarParser parser = new IrcGrammarParser(tokenStream);
+        if(parser.ircMessage().isEmpty()) return null;
+        parser.reset();
+        return parser;
     }
-
     /**
-     *
-     * @param ircMessage
-     * @return
+     * Get prefix
+     * @param ircMessage String to be parsed
+     * @return Optional String
+     * @see Optional
      */
     private static Optional<String> getPrefix(final String ircMessage){
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser.ircMessage().first().PREFIX() == null) return Optional.empty();
+        if(parser == null || parser.ircMessage().first().PREFIX() == null) return Optional.empty();
+
         parser.reset();
 
         return Optional.of(parser.ircMessage().first().PREFIX().toString());
     }
-
     /**
-     *
-     * @param ircMessage
-     * @return
+     *Get tags of the ircMessage
+     * @param ircMessage String to be parsed
+     * @return Optional HasMap<String, String> key value tag
      */
-    private static Optional<String> getTags(final String ircMessage){
+    private static Optional<HashMap<String, String>> getTags(final String ircMessage){
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser.ircMessage().first().TAGS() == null) return Optional.empty();
+        HashMap<String, String> tags = new HashMap<>();
+        if(parser == null || parser.ircMessage().first().TAGS() == null) return Optional.empty();
         parser.reset();
 
-        return Optional.of(parser.ircMessage().first().TAGS().toString());
-    }
+        StringTokenizer tokenizer = new StringTokenizer(parser.ircMessage().first().TAGS().toString(), "@;");
 
+        while (tokenizer.hasMoreTokens()){
+
+            String[] splitTags = tokenizer.nextToken().split("=");
+
+            if(splitTags.length == 2) tags.put(splitTags[0], splitTags[1]);
+
+        }
+        return Optional.of(tags);
+    }
     /**
-     *
-     * @param ircMessage
-     * @return
+     * Get Command of the ircMessage
+     * @param ircMessage String to be Parsed
+     * @return Type of the command
+     * @see CommandTypes
+     * @see Optional
      */
     private static Optional<CommandTypes> getCommand(final String ircMessage){
 
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser.ircMessage().cmd().isEmpty()) return Optional.empty();
+        if(parser == null || parser.ircMessage().cmd().isEmpty()) return Optional.empty();
         parser.reset();
 
         CommandTypes cmd = CommandTypes.getValue(parser.ircMessage().cmd().STRING().toString().toUpperCase());
@@ -75,39 +92,95 @@ public final class IRCParser {
 
         return Optional.of(cmd);
     }
+    /**
+     * Get Arguments command
+     * @param ircMessage String to be parsed
+     * @return Optional List<String> list of the arguments
+     * @see Optional
+     */
+    private static Optional<List<String>> getArguments(final String ircMessage){
+        IrcGrammarParser parser = getParser(ircMessage);
+
+        List<String> arguments = new ArrayList<>();
+
+        if(parser == null || parser.ircMessage().args().isEmpty()) return Optional.empty();
+        parser.reset();
+
+        for(TerminalNode node : parser.ircMessage().args().STRING()) arguments.add(node.toString());
+
+        return Optional.of(arguments);
+    }
 
     /**
-     *
-     * @param ircMessage
-     * @return
+     * Get Trailling of the ircMessage
+     * @param ircMessage  String to be parsed
+     * @return Trailling.
      */
-    public static IRCMessage GrammarParse(final String ircMessage)  {
-        String originalRaw = ircMessage;
-        String prefix = "";
-        String tag;
+    private static Optional<String> getTralling(final String ircMessage){
+        IrcGrammarParser parser = getParser(ircMessage);
+
+        if(parser == null || parser.ircMessage().trailling() == null) return Optional.empty();
+        parser.reset();
+
+
+
+        return Optional.of(parser.ircMessage().trailling().getText());
+    }
+    /**
+     * @param input String to be parsed.
+     * @return Optional Parsed message (if parsing has failed Optional will be empty)
+     * @see Optional
+     */
+    public static Optional<IRCMessage> parseV2(final String input)  {
+
+        String ircMessage = input;
+        if(ircMessage == null || ircMessage.isEmpty()) return Optional.empty();
+
+
+        if(ircMessage.charAt(0) == '/') ircMessage = ircMessage.replaceFirst("/", "");
+
+        String prefix;
+
         List<String> parsedPrefix = new ArrayList<>();
-        CommandTypes command = null;
-        List<String> arguments = new ArrayList<>();
-        String trailing = "";
-        HashMap<String, String> tags = new HashMap<>();//IRCv3
+        CommandTypes command;
+        List<String> arguments;
+        String trailing;
+        HashMap<String, String> tags;
 
+        //GET PREFIX
         prefix = getPrefix(ircMessage).orElse("");
-        tag = getTags(ircMessage).orElse("");
+        prefix = prefix.replaceFirst(" ", "");
 
+        StringTokenizer tokenizer = new StringTokenizer(prefix, ":!@");
+        while (tokenizer.hasMoreTokens()) parsedPrefix.add(tokenizer.nextToken());
+
+        //GET TAGS
+        tags = getTags(ircMessage).orElse(new HashMap<>());
+
+
+        //GET COMMAND
         try {
             command = getCommand(ircMessage).orElseThrow(() -> new CommandException("Wrong command !"));
         } catch (CommandException e) {
-            System.out.println(e);
-            return null;
+            System.out.println(e.toString());
+            return Optional.empty();
         }
 
-        System.out.println(command.toString());
+        //GET ARGUMENTS
+        arguments = getArguments(ircMessage).orElse(new ArrayList<>());
 
-        return new IRCMessage(originalRaw, prefix, parsedPrefix, command, arguments, tags, trailing);
+        //GET TRAILLING
+        trailing = getTralling(ircMessage).orElse("");
+        trailing = trailing.replaceFirst(":", "");
+
+        return Optional.of(new IRCMessage(ircMessage, prefix, parsedPrefix, command, arguments, tags, trailing));
     }
 
-
-
+    /**
+     * @param s String to be parsed.
+     * @return String parsed
+     * @see IRCMessage
+     */
     public static IRCMessage parse(String s){
         String input = s;
         if(input == null || input.equals("")) return null;

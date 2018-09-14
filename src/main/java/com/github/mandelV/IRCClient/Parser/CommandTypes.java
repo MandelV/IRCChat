@@ -31,17 +31,4 @@ public enum CommandTypes {
 
         return null;
     }
-
-    public boolean isCmdMatch(final String value) {
-
-        boolean test = false;
-        for(CommandTypes cmd : CommandTypes.values()){
-            if(cmd.toString().toUpperCase().equals(value.toUpperCase())){
-                test = true;
-                break;
-            }
-        }
-
-        return test;
-    }
 }

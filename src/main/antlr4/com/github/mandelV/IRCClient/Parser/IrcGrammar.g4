@@ -28,30 +28,31 @@ ircMessage : TAGS? PREFIX? ARGS TRALLING?;
 
 
 //Tag Lexer rules
-TagSeparator : ';' -> skip;
+
 Tag : [a-zA-Z0-9]+'='[a-zA-Z0-9]+';'?;
 
-SPACE : ' ' -> skip;
 
 //Prefix lexer rules
 
-STRING : [a-zA-Z0-9#.-]+;
+STRING : [a-zA-Z0-9*#.'!éàè_()&$^;,@-]+;
 
 
 
-ircMessage : first? cmd  args?  trailling? ;
+ircMessage : first? cmd?  args?  trailling? ;
 
-first : TAGS? PREFIX?;
+first : (TAGS? PREFIX?) | NOTICE?;
 
-TAGS : '@'Tag+;
+TAGS : (' '+)? '@'Tag+;
 
-PREFIX : ':'STRING'!'STRING'@'STRING;
+PREFIX : (' '+)?':'STRING'!'STRING'@'STRING;
 
-cmd : ' '?STRING' '?;
+NOTICE : (' '+)?':'STRING(' '+)?'NOTICE'(' '+)? '*'(' '+)?':***'(' '+)? .*;
 
-args : (STRING)+ ;
+cmd : (' '+)?STRING(' '+)?;
 
-trailling : ':'.*;
+args : (STRING(' '+)?)+ ;
+
+trailling : ':' .*;
 
 
 

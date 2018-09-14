@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * IRCClient
@@ -255,8 +256,15 @@ public class IRCClient implements Runnable  {
        while(this.isStop()){
            if(this.receiveIsReady()){
 
-               IRCMessage message = IRCParser.parse(this.receive());
-               this.processingMessage(message);
+               //IRCMessage message = IRCParser.parse(this.receive());
+               //this.processingMessage(message);
+
+
+               String msg = this.receive();
+               System.out.println(msg);
+               IRCParser.parseV2(msg);
+
+
            }
        }
        try{
