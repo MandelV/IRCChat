@@ -51,17 +51,17 @@ public class IRCParserTest {
         Assert.assertFalse("Test Wrong entry : :randomEntry", IRCParser.parseV2(":" + randomStringGenerator(64)).isPresent());
 
         for(int i = 0; i < 10; i ++)
-        Assert.assertFalse("Test Wrong entry : @randomEntry", IRCParser.parseV2("@" + randomStringGenerator(64)).isPresent());
+        Assert.assertFalse("Test Wrong entry : @randomEntry", IRCParser.parseV2("@" + randomStringGenerator(100)).isPresent());
 
         for(int i = 0; i < 10; i ++)
             Assert.assertFalse("Test Wrong entry : :randomEntry!randomEntry@randomEntry randomEntry #randomEntry :randomEntry", IRCParser.parseV2(":"
                     + randomStringGenerator(64)
                     + "!"
-                    + randomStringGenerator(64)
+                    + randomStringGenerator(65)
                     + "@"
                     + randomStringGenerator(64)
                     + " "
-                    + randomStringGenerator(64)
+                    + randomStringGenerator(50)
                     + "#"
                     + randomStringGenerator(64)
             ).isPresent());
@@ -86,15 +86,27 @@ public class IRCParserTest {
 
             Assert.assertEquals("Test prefix of : Test!Unit@Host.fr JOIN #channel", ":Test!Unit@Host.fr", message.getPrefix());
             Assert.assertEquals("Test Command of : Test!Unit@Host.fr JOIN #channel", CommandTypes.JOIN, message.getCommand());
-
             Assert.assertEquals("Test Arguments of : Test!Unit@Host.fr JOIN #channel","#channel", message.getArguments().get(0));
-
-
         });
 
+        IRCParser.parseV2("@tag=1;tag2=2 :Test!Unit@Host.fr JOIN #channel arg2 :Ceci est un Trailling !").ifPresent(message -> {
 
+            String testMessage = "@tag=1;tag2=2 :Test!Unit@Host.fr JOIN #channel arg2 :Ceci est un Trailling !";
+            //prefix
+            Assert.assertEquals("Test prefix : " + testMessage, ":Test!Unit@Host.fr", message.getPrefix());
+            //command
+            Assert.assertEquals("Test command : " +testMessage, CommandTypes.JOIN, message.getCommand());
+
+            //Argument
+            Assert.assertEquals("Test Argument : " +testMessage,"#channel", message.getArguments().get(0));
+            Assert.assertEquals("Test Argument : " +testMessage,"arg2", message.getArguments().get(1));
+
+            //TAGS
+            Assert.assertEquals("Test TAGS : " +testMessage, message.getTags().get("tag"), "1");
+            Assert.assertEquals("Test TAGS : " +testMessage, message.getTags().get("tag2"), "2");
+
+            //TRAILLING
+            Assert.assertEquals("Test TRAILLING : " +testMessage, "Ceci est un Trailling !", message.getTrailing());
+        });
     }
-
-
-
 }

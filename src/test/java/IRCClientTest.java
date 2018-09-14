@@ -1,6 +1,8 @@
 import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Client.IRCClient;
 import com.github.mandelV.IRCClient.Client.InstanciateException;
+import com.github.mandelV.IRCClient.Parser.CommandTypes;
+import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,11 +42,22 @@ public class IRCClientTest {
 
     }
     @Test
-    public void connectionTest(){
+    public void connectionTest() throws InterruptedException {
 
         client.send("PING :00UNITTESTPING00");
-        if(!Chat.getInstance().getMessages().get(Chat.getInstance().getMessages().size()-1).getTrailing().equals("00UNITTESTPING00"))
-            fail("Test connection by Ping fail");
+        Thread.sleep(50);
+
+        boolean pong = false;
+        for(IRCMessage message : Chat.getInstance().getMessages()){
+
+            if(message.getCommand() == CommandTypes.PONG && message.getTrailing().equals("00UNITTESTPING00")){
+                pong = true;
+                break;
+            }
+        }
+
+
+        if(!pong ) fail("Test connection by Ping fail");
 
     }
 
