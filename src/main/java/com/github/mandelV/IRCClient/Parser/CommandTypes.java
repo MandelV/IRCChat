@@ -26,7 +26,7 @@ public enum CommandTypes {
     public static CommandTypes getValue(final String value){
 
         for(CommandTypes cmd : CommandTypes.values()){
-            if(cmd.toString().toUpperCase().equals(value.toUpperCase())) return cmd;
+            if(cmd.toString().equals(value.toUpperCase())) return cmd;
         }
 
         return null;
