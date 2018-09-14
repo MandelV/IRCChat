@@ -5,7 +5,11 @@ import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import static org.hamcrest.CoreMatchers.is;
 
 
 /**
@@ -89,11 +93,21 @@ public class IRCParserTest {
 
 
 
+
+
         IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").ifPresent(message -> {
 
             Assert.assertEquals("Test prefix of : Test!Unit@Host.fr JOIN #channel", ":Test!Unit@Host.fr", message.getPrefix());
             Assert.assertEquals("Test Command of : Test!Unit@Host.fr JOIN #channel", CommandTypes.JOIN, message.getCommand());
             Assert.assertEquals("Test Arguments of : Test!Unit@Host.fr JOIN #channel","#channel", message.getArguments().get(0));
+
+
+            List<String> testPrefix = new ArrayList<>();
+            testPrefix.add("Test");
+            testPrefix.add("Unit");
+            testPrefix.add("Host.fr");
+
+            Assert.assertThat("Test Parsedprefix of", testPrefix,is(message.getParsedPrefix()));
         });
 
         IRCParser.parseV2("@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !").ifPresent(message -> {
@@ -101,6 +115,8 @@ public class IRCParserTest {
             String testMessage = "@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !";
             //prefix
             Assert.assertEquals("Test prefix : " + testMessage, ":Test!Unit@Host.fr", message.getPrefix());
+
+
 
             Assert.assertEquals("Test parsedPrefix : " + testMessage,"Test", message.getPrefix(PrefixPosition.FIRST));
             Assert.assertEquals("Test parsedPrefix : " + testMessage,"Unit", message.getPrefix(PrefixPosition.SECOND));
