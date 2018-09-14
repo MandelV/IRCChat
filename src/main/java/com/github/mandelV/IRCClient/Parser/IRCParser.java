@@ -27,9 +27,11 @@ public final class IRCParser {
     private static IrcGrammarParser getParser(final String input){
         if(input == null || input.isEmpty()) return null;
         IrcGrammarLexer lexer = new IrcGrammarLexer(new ANTLRInputStream(input));
-        //lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
+        lexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         IrcGrammarParser parser = new IrcGrammarParser(tokenStream);
+        parser.reset();
+        if(parser.ircMessage() == null) return null;
         parser.reset();
 
         return parser;
@@ -59,9 +61,13 @@ public final class IRCParser {
         IrcGrammarParser parser = getParser(ircMessage);
 
         HashMap<String, String> tags = new HashMap<>();
+
         if(parser == null || parser.ircMessage().first() == null) return Optional.empty();
+        if(parser.first() == null) return Optional.empty();
         parser.reset();
         if(parser.ircMessage().first().TAGS() == null) return Optional.empty();
+        parser.reset();
+
 
         StringTokenizer tokenizer = new StringTokenizer(parser.ircMessage().first().TAGS().toString(), "@;");
 
@@ -85,7 +91,7 @@ public final class IRCParser {
 
         IrcGrammarParser parser = getParser(ircMessage);
 
-        if(parser.ircMessage().cmd() == null) return Optional.empty();
+        if(parser == null || parser.ircMessage().cmd() == null) return Optional.empty();
         parser.reset();
         if(parser.ircMessage().cmd().isEmpty()) return Optional.empty();
         parser.reset();

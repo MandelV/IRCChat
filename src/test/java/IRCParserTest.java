@@ -1,14 +1,10 @@
 import com.github.mandelV.IRCClient.Parser.CommandTypes;
 import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
-import com.github.mandelV.IRCClient.Parser.PrefixPosition;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Random;
-import java.util.StringTokenizer;
-
-import static org.junit.Assert.fail;
 
 /**
  * IRCParserTest
@@ -37,39 +33,38 @@ public class IRCParserTest {
     @Test
     public void parseEmptyStringTest(){
 
-       // Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse(""));
+       Assert.assertFalse("parseEmptyStringTest : message is not  null", IRCParser.parseV2("").isPresent());
     }
     /**
      * Test Parser with wrong and random String.
      */
     @Test
     public void parseWrongStringTest(){
-/*
-        //TEST whith Wrong String.
-        Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("/"));
-        Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("   dddd ddd ddd ddqdqsdqsd "));
-        Assert.assertNull("parseEmptyStringTest : message is not  null", IRCParser.parse("                                                        "));
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":d@a d d d d :c"));
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("@:@!"));
 
-        //TEST with random String.
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":" + randomStringGenerator(-1)));
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("@" + randomStringGenerator(-1)));
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse("  " + randomStringGenerator(-1)));
-        Assert.assertNull("parseEmptyStringTest : message is not null", IRCParser.parse(":"
-                + randomStringGenerator(64)
-                + "!"
-                + randomStringGenerator(64)
-                + "@"
-                + randomStringGenerator(64)
-                + " "
-                + randomStringGenerator(64)
-                + "#"
-                + randomStringGenerator(64)
-        ));
-*/
+        Assert.assertFalse("Test Wrong entry : /", IRCParser.parseV2("/").isPresent());
+        Assert.assertFalse("Test Wrong entry :    dddd ddd ddd ddqdqsdqsd ", IRCParser.parseV2("   dddd ddd ddd ddqdqsdqsd ").isPresent());
+        Assert.assertFalse("Test Wrong entry : many spaces", IRCParser.parseV2("                       ").isPresent());
+        Assert.assertFalse("Test Wrong entry : :d@a d d d d :c", IRCParser.parseV2(":d@a d d d d :c").isPresent());
+        Assert.assertFalse("Test Wrong entry : @:@!", IRCParser.parseV2("@:@!").isPresent());
 
+        for(int i = 0; i < 10; i ++)
+        Assert.assertFalse("Test Wrong entry : :randomEntry", IRCParser.parseV2(":" + randomStringGenerator(64)).isPresent());
 
+        for(int i = 0; i < 10; i ++)
+        Assert.assertFalse("Test Wrong entry : @randomEntry", IRCParser.parseV2("@" + randomStringGenerator(64)).isPresent());
+
+        for(int i = 0; i < 10; i ++)
+            Assert.assertFalse("Test Wrong entry : :randomEntry!randomEntry@randomEntry randomEntry #randomEntry :randomEntry", IRCParser.parseV2(":"
+                    + randomStringGenerator(64)
+                    + "!"
+                    + randomStringGenerator(64)
+                    + "@"
+                    + randomStringGenerator(64)
+                    + " "
+                    + randomStringGenerator(64)
+                    + "#"
+                    + randomStringGenerator(64)
+            ).isPresent());
     }
     /**
      * Test Parser with Right String and test if IRCMessage contain the right values.
@@ -77,41 +72,29 @@ public class IRCParserTest {
      */
     @Test
     public void parseRightStringTest(){
+        Assert.assertTrue("Test Right entry : :Test!Unit@Host.fr JOIN #channel ", IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").isPresent());
+        Assert.assertTrue("Test Right entry : :Test!Unit@Host.fr QUIT :Bye people !", IRCParser.parseV2(":Test!Unit@Host.fr QUIT :Bye people !").isPresent());
+        Assert.assertTrue("Test Right entry : :Test!Unit@Host.fr JOIN #channel", IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").isPresent());
+        Assert.assertTrue("Test Right entry : @tag1=value1 :Test!Unit@Host.fr JOIN #channel", IRCParser.parseV2("@tag1=value1 :Test!Unit@Host.fr JOIN #channel").isPresent());
 
-        Assert.assertTrue("Test : /ping :A5dc8 - ", IRCParser.parseV2("/ping :A5dc8").isPresent());
-        Assert.assertTrue("Test : - :Test!Unit@Host.fr QUIT :Bye people !", IRCParser.parseV2(":Test!Unit@Host.fr QUIT :Bye people !").isPresent());
-
-
-
-/*
-
-        message = IRCParser.parse(":Test!Unit@Host.fr QUIT :Bye people !");
-        Assert.assertNotNull("parseEmptyStringTest : message is not null", message);
-
-        if(message.getPrefix(PrefixPosition.FIRST).equals("Test")
-        && message.getPrefix(PrefixPosition.SECOND).equals("Unit")
-        && message.getPrefix(PrefixPosition.THIRD).equals("Host.fr"))
-            fail("Prefix does not matches");
-
-        if(message.getCommand() != CommandTypes.QUIT) fail("command does not matches");
-        if(!message.getTrailing().equals("Bye people !")) fail("trailling does not matches");
-
-
-        message = IRCParser.parse(":Test!Unit@Host.fr JOIN #channel");
-        Assert.assertNotNull("parseEmptyStringTest : message is not null", message);
-
-        if(message.getArguments().size() == 0 || !message.getArguments().get(0).equals("#channel")) fail("no arguments or not matches");
-
-        message = IRCParser.parse("@tag1=value1 :Test!Unit@Host.fr JOIN #channel");
-        Assert.assertNotNull("parseEmptyStringTest : message is not null", message);
-
-        if(!message.getOriginalRaw().equals("@tag1=value1 :Test!Unit@Host.fr JOIN #channel")) fail("message don't matches");
-        if(!message.getTags().get("tag1").equals("value1")) fail("tag does not matches");
-        if(message.getParsedPrefix().size() != 3) fail("Wrong size prefix");
-        if(!message.getPrefix().equals("Test!Unit@Host.fr")) fail("prefix does not matches");
-        if(message.getCommand() != CommandTypes.JOIN) fail("command does not matches");
-        if(!message.getArguments().get(0).equals("#channel")) fail("argument does not matches");
-        */
     }
+
+    @Test
+    public void parseTestContentMessage(){
+
+        IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").ifPresent(message -> {
+
+            Assert.assertEquals("Test prefix of : Test!Unit@Host.fr JOIN #channel", ":Test!Unit@Host.fr", message.getPrefix());
+            Assert.assertEquals("Test Command of : Test!Unit@Host.fr JOIN #channel", CommandTypes.JOIN, message.getCommand());
+
+            Assert.assertEquals("Test Arguments of : Test!Unit@Host.fr JOIN #channel","#channel", message.getArguments().get(0));
+
+
+        });
+
+
+    }
+
+
 
 }

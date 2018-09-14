@@ -2,7 +2,6 @@ package com.github.mandelV.IRCClient;
 
 import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Client.IRCClient;
-import com.github.mandelV.IRCClient.Parser.IRCParser;
 
 import java.io.IOException;
 import java.util.Scanner;
