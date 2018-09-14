@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.Random;
 
+
 /**
  * IRCParserTest
  * @author VAUBOURG Mandel
@@ -82,6 +83,11 @@ public class IRCParserTest {
     @Test
     public void parseTestContentMessage(){
 
+        Assert.assertTrue(IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").isPresent());
+        Assert.assertTrue(IRCParser.parseV2("@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !").isPresent());
+
+
+
         IRCParser.parseV2(":Test!Unit@Host.fr JOIN #channel").ifPresent(message -> {
 
             Assert.assertEquals("Test prefix of : Test!Unit@Host.fr JOIN #channel", ":Test!Unit@Host.fr", message.getPrefix());
@@ -89,9 +95,9 @@ public class IRCParserTest {
             Assert.assertEquals("Test Arguments of : Test!Unit@Host.fr JOIN #channel","#channel", message.getArguments().get(0));
         });
 
-        IRCParser.parseV2("@tag=1;tag2=2 :Test!Unit@Host.fr JOIN #channel arg2 :Ceci est un Trailling !").ifPresent(message -> {
+        IRCParser.parseV2("@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !").ifPresent(message -> {
 
-            String testMessage = "@tag=1;tag2=2 :Test!Unit@Host.fr JOIN #channel arg2 :Ceci est un Trailling !";
+            String testMessage = "@tag=1;tag2=2 :Test!Unit@Host.fr join #channel arg2 :Ceci est un Trailling !";
             //prefix
             Assert.assertEquals("Test prefix : " + testMessage, ":Test!Unit@Host.fr", message.getPrefix());
             //command
