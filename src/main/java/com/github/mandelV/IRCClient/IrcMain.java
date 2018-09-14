@@ -2,7 +2,9 @@ package com.github.mandelV.IRCClient;
 
 import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Client.IRCClient;
+import com.github.mandelV.IRCClient.Parser.IRCParser;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -10,10 +12,10 @@ import java.util.Scanner;
  */
 public class IrcMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if(args.length < 4) return;
 
-        Scanner scanner = new Scanner(System.in);
+        /*Scanner scanner = new Scanner(System.in);
         String message;
         //Instanciate Chat.
         Chat.getInstance();
@@ -34,6 +36,10 @@ public class IrcMain {
             }else{
                 client.send("PRIVMSG " + client.getChannel() + " :" + message);
             }
-        }
+        }*/
+
+        //IRCParser.GrammarParse("@tag1=value1;va :test!USER@DOMAINE JOIN arg arg ar :Fff !");
+        IRCParser.GrammarParse("@tag=aa;bla=d;test=test;v=5 :bla!bouch@127.0.0 OIN #arg1 arg :dkkkk");
+        //IRCParser.GrammarParse("@tag=aa;bla=d;test=test;v=5 CMD #arg1 arg :dkkkk");
     }
 }

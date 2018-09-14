@@ -16,5 +16,32 @@ public enum CommandTypes {
     NAMES,
     LIST,
     PRIVMSG,
-    NOTICE
+    NOTICE;
+
+
+
+    CommandTypes() {
+    }
+
+    public static CommandTypes getValue(final String value){
+
+        for(CommandTypes cmd : CommandTypes.values()){
+            if(cmd.toString().toUpperCase().equals(value.toUpperCase())) return cmd;
+        }
+
+        return null;
+    }
+
+    public boolean isCmdMatch(final String value) {
+
+        boolean test = false;
+        for(CommandTypes cmd : CommandTypes.values()){
+            if(cmd.toString().toUpperCase().equals(value.toUpperCase())){
+                test = true;
+                break;
+            }
+        }
+
+        return test;
+    }
 }
