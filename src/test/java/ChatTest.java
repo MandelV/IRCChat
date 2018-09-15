@@ -1,5 +1,4 @@
 import com.github.mandelV.IRCClient.Chat.Chat;
-import com.github.mandelV.IRCClient.Parser.IRCMessage;
 import com.github.mandelV.IRCClient.Parser.IRCParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,8 +16,7 @@ public class ChatTest {
     @Test
     public void messageListTest(){
 
-        IRCMessage message = IRCParser.parse(":Test!Unit@Host.fr QUIT :Bye people !");
-        Chat.getInstance().pushMessage(message);
+        IRCParser.parseV2(":Test!Unit@Host.fr QUIT :Bye people !").ifPresent(Chat.getInstance()::pushMessage);
 
         if(Chat.getInstance().getMessages().size()  == 0) fail("Error messageList size : " + Chat.getInstance().getMessages().size());
 

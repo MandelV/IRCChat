@@ -3,6 +3,7 @@ package com.github.mandelV.IRCClient;
 import com.github.mandelV.IRCClient.Chat.Chat;
 import com.github.mandelV.IRCClient.Client.IRCClient;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Scanner;
  */
 public class IrcMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if(args.length < 4) return;
 
         Scanner scanner = new Scanner(System.in);

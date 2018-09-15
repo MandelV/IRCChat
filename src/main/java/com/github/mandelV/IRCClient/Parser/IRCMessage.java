@@ -15,7 +15,7 @@ public class IRCMessage {
     private CommandTypes command;
     private List<String> arguments;
     private String trailing;
-    private HashMap<String, String> messageTags;//IRCv3
+    private HashMap<String, String> tags;//IRCv3
 
 
    IRCMessage(final String originalRaw,
@@ -33,7 +33,7 @@ public class IRCMessage {
        this.command = commandTypes;
        this.arguments = arguments;
        this.trailing = trailing;
-       this.messageTags = messageTags;
+       this.tags = messageTags;
    }
 
     public CommandTypes getCommand() {
@@ -42,7 +42,7 @@ public class IRCMessage {
     }
 
     public HashMap<String, String> getTags() {
-        return messageTags;
+        return tags;
     }
 
     public List<String> getArguments() {
