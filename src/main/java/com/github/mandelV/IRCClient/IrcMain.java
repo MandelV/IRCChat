@@ -16,7 +16,7 @@ public class IrcMain {
 
         Scanner scanner = new Scanner(System.in);
         String message;
-        //Instanciate Chat.
+        //Instanciate Chat..
         Chat.getInstance();
 
 
